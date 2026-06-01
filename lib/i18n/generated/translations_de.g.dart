@@ -53,6 +53,8 @@ class TranslationsDe extends Translations {
   late final _TranslationsContactScreenDe contact_screen = _TranslationsContactScreenDe._(_root);
   @override
   late final _TranslationsSettingsScreenDe settings_screen = _TranslationsSettingsScreenDe._(_root);
+  @override
+  late final _TranslationsDosageScreenDe dosage_screen = _TranslationsDosageScreenDe._(_root);
 }
 
 // Path: language
@@ -175,6 +177,31 @@ class _TranslationsSettingsScreenDe extends TranslationsSettingsScreenEn {
       'Aktuell gibt es nur wenige Einstellungen für die App, da sie noch in der Beta ist.\n\nSchau gerne später wieder vorbei!';
 }
 
+// Path: dosage_screen
+class _TranslationsDosageScreenDe extends TranslationsDosageScreenEn {
+  _TranslationsDosageScreenDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  late final _TranslationsDosageScreenSectionDe section = _TranslationsDosageScreenSectionDe._(_root);
+  @override
+  String get water_hint => 'z.B. 20';
+  @override
+  late final _TranslationsDosageScreenProductsDe products = _TranslationsDosageScreenProductsDe._(_root);
+  @override
+  late final _TranslationsDosageScreenPbwModeDe pbw_mode = _TranslationsDosageScreenPbwModeDe._(_root);
+  @override
+  late final _TranslationsDosageScreenCustomDe custom = _TranslationsDosageScreenCustomDe._(_root);
+  @override
+  late final _TranslationsDosageScreenResultDe result = _TranslationsDosageScreenResultDe._(_root);
+  @override
+  late final _TranslationsDosageScreenRinseDe rinse = _TranslationsDosageScreenRinseDe._(_root);
+  @override
+  late final _TranslationsDosageScreenContactTimeDe contact_time = _TranslationsDosageScreenContactTimeDe._(_root);
+}
+
 // Path: home_screen_cards.dosage_calc
 class _TranslationsHomeScreenCardsDosageCalcDe extends TranslationsHomeScreenCardsDosageCalcEn {
   _TranslationsHomeScreenCardsDosageCalcDe._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -286,6 +313,103 @@ class _TranslationsSettingsScreenDeleteAppDataDe extends TranslationsSettingsScr
   String get snackbar => 'Daten gelöscht. Starte die App neu, um die Änderungen anzuwenden.';
 }
 
+// Path: dosage_screen.section
+class _TranslationsDosageScreenSectionDe extends TranslationsDosageScreenSectionEn {
+  _TranslationsDosageScreenSectionDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get product => 'Produkt';
+  @override
+  String get application => 'Anwendung';
+  @override
+  String get water => 'Wassermenge';
+}
+
+// Path: dosage_screen.products
+class _TranslationsDosageScreenProductsDe extends TranslationsDosageScreenProductsEn {
+  _TranslationsDosageScreenProductsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get custom => 'Eigener';
+}
+
+// Path: dosage_screen.pbw_mode
+class _TranslationsDosageScreenPbwModeDe extends TranslationsDosageScreenPbwModeEn {
+  _TranslationsDosageScreenPbwModeDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get cold => 'Kaltseite';
+  @override
+  String get hot => 'Kessel / heiß';
+}
+
+// Path: dosage_screen.custom
+class _TranslationsDosageScreenCustomDe extends TranslationsDosageScreenCustomEn {
+  _TranslationsDosageScreenCustomDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get factor_label => 'Faktor (Menge je Liter Wasser)';
+  @override
+  String get factor_hint => 'z.B. 1,5';
+  @override
+  String get unit_label => 'Einheit';
+}
+
+// Path: dosage_screen.result
+class _TranslationsDosageScreenResultDe extends TranslationsDosageScreenResultEn {
+  _TranslationsDosageScreenResultDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get label => 'Du brauchst';
+}
+
+// Path: dosage_screen.rinse
+class _TranslationsDosageScreenRinseDe extends TranslationsDosageScreenRinseEn {
+  _TranslationsDosageScreenRinseDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get no => 'nicht spülen';
+  @override
+  String get yes => 'gut spülen';
+}
+
+// Path: dosage_screen.contact_time
+class _TranslationsDosageScreenContactTimeDe extends TranslationsDosageScreenContactTimeEn {
+  _TranslationsDosageScreenContactTimeDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get starsan => '1–2 Min';
+  @override
+  String get saniclean => '2–3 Min';
+  @override
+  String get pbw => 'einweichen';
+  @override
+  String get chemipro_oxi => '2–5 Min';
+  @override
+  String get custom => '—';
+}
+
 // Path: settings_screen.delete_app_data.alert_dialog
 class _TranslationsSettingsScreenDeleteAppDataAlertDialogDe extends TranslationsSettingsScreenDeleteAppDataAlertDialogEn {
   _TranslationsSettingsScreenDeleteAppDataAlertDialogDe._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -395,6 +519,42 @@ extension on TranslationsDe {
         return 'Daten gelöscht. Starte die App neu, um die Änderungen anzuwenden.';
       case 'settings_screen.placeholder_label':
         return 'Aktuell gibt es nur wenige Einstellungen für die App, da sie noch in der Beta ist.\n\nSchau gerne später wieder vorbei!';
+      case 'dosage_screen.section.product':
+        return 'Produkt';
+      case 'dosage_screen.section.application':
+        return 'Anwendung';
+      case 'dosage_screen.section.water':
+        return 'Wassermenge';
+      case 'dosage_screen.water_hint':
+        return 'z.B. 20';
+      case 'dosage_screen.products.custom':
+        return 'Eigener';
+      case 'dosage_screen.pbw_mode.cold':
+        return 'Kaltseite';
+      case 'dosage_screen.pbw_mode.hot':
+        return 'Kessel / heiß';
+      case 'dosage_screen.custom.factor_label':
+        return 'Faktor (Menge je Liter Wasser)';
+      case 'dosage_screen.custom.factor_hint':
+        return 'z.B. 1,5';
+      case 'dosage_screen.custom.unit_label':
+        return 'Einheit';
+      case 'dosage_screen.result.label':
+        return 'Du brauchst';
+      case 'dosage_screen.rinse.no':
+        return 'nicht spülen';
+      case 'dosage_screen.rinse.yes':
+        return 'gut spülen';
+      case 'dosage_screen.contact_time.starsan':
+        return '1–2 Min';
+      case 'dosage_screen.contact_time.saniclean':
+        return '2–3 Min';
+      case 'dosage_screen.contact_time.pbw':
+        return 'einweichen';
+      case 'dosage_screen.contact_time.chemipro_oxi':
+        return '2–5 Min';
+      case 'dosage_screen.contact_time.custom':
+        return '—';
       default:
         return null;
     }

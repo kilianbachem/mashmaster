@@ -47,6 +47,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
   late final TranslationsHomeScreenCardsEn home_screen_cards = TranslationsHomeScreenCardsEn.internal(_root);
   late final TranslationsContactScreenEn contact_screen = TranslationsContactScreenEn.internal(_root);
   late final TranslationsSettingsScreenEn settings_screen = TranslationsSettingsScreenEn.internal(_root);
+  late final TranslationsDosageScreenEn dosage_screen = TranslationsDosageScreenEn.internal(_root);
 }
 
 // Path: language
@@ -140,6 +141,23 @@ class TranslationsSettingsScreenEn {
   String get placeholder_label => 'There are currently very few settings for this app, since it is still in Beta.\n\nPlease come back later!';
 }
 
+// Path: dosage_screen
+class TranslationsDosageScreenEn {
+  TranslationsDosageScreenEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  late final TranslationsDosageScreenSectionEn section = TranslationsDosageScreenSectionEn.internal(_root);
+  String get water_hint => 'e.g., 20';
+  late final TranslationsDosageScreenProductsEn products = TranslationsDosageScreenProductsEn.internal(_root);
+  late final TranslationsDosageScreenPbwModeEn pbw_mode = TranslationsDosageScreenPbwModeEn.internal(_root);
+  late final TranslationsDosageScreenCustomEn custom = TranslationsDosageScreenCustomEn.internal(_root);
+  late final TranslationsDosageScreenResultEn result = TranslationsDosageScreenResultEn.internal(_root);
+  late final TranslationsDosageScreenRinseEn rinse = TranslationsDosageScreenRinseEn.internal(_root);
+  late final TranslationsDosageScreenContactTimeEn contact_time = TranslationsDosageScreenContactTimeEn.internal(_root);
+}
+
 // Path: home_screen_cards.dosage_calc
 class TranslationsHomeScreenCardsDosageCalcEn {
   TranslationsHomeScreenCardsDosageCalcEn.internal(this._root);
@@ -229,6 +247,86 @@ class TranslationsSettingsScreenDeleteAppDataEn {
   String get button_label => 'Delete Now';
   late final TranslationsSettingsScreenDeleteAppDataAlertDialogEn alert_dialog = TranslationsSettingsScreenDeleteAppDataAlertDialogEn.internal(_root);
   String get snackbar => 'Data deleted. Restart the app for the changes to take effect.';
+}
+
+// Path: dosage_screen.section
+class TranslationsDosageScreenSectionEn {
+  TranslationsDosageScreenSectionEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get product => 'Product';
+  String get application => 'Application';
+  String get water => 'Water volume';
+}
+
+// Path: dosage_screen.products
+class TranslationsDosageScreenProductsEn {
+  TranslationsDosageScreenProductsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get custom => 'Custom';
+}
+
+// Path: dosage_screen.pbw_mode
+class TranslationsDosageScreenPbwModeEn {
+  TranslationsDosageScreenPbwModeEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get cold => 'Cold side';
+  String get hot => 'Kettle / hot';
+}
+
+// Path: dosage_screen.custom
+class TranslationsDosageScreenCustomEn {
+  TranslationsDosageScreenCustomEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get factor_label => 'Factor (amount per litre of water)';
+  String get factor_hint => 'e.g., 1.5';
+  String get unit_label => 'Unit';
+}
+
+// Path: dosage_screen.result
+class TranslationsDosageScreenResultEn {
+  TranslationsDosageScreenResultEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get label => 'You need';
+}
+
+// Path: dosage_screen.rinse
+class TranslationsDosageScreenRinseEn {
+  TranslationsDosageScreenRinseEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get no => 'do not rinse';
+  String get yes => 'rinse well';
+}
+
+// Path: dosage_screen.contact_time
+class TranslationsDosageScreenContactTimeEn {
+  TranslationsDosageScreenContactTimeEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get starsan => '1–2 min';
+  String get saniclean => '2–3 min';
+  String get pbw => 'soak';
+  String get chemipro_oxi => '2–5 min';
+  String get custom => '—';
 }
 
 // Path: settings_screen.delete_app_data.alert_dialog
@@ -336,6 +434,42 @@ extension on Translations {
         return 'Data deleted. Restart the app for the changes to take effect.';
       case 'settings_screen.placeholder_label':
         return 'There are currently very few settings for this app, since it is still in Beta.\n\nPlease come back later!';
+      case 'dosage_screen.section.product':
+        return 'Product';
+      case 'dosage_screen.section.application':
+        return 'Application';
+      case 'dosage_screen.section.water':
+        return 'Water volume';
+      case 'dosage_screen.water_hint':
+        return 'e.g., 20';
+      case 'dosage_screen.products.custom':
+        return 'Custom';
+      case 'dosage_screen.pbw_mode.cold':
+        return 'Cold side';
+      case 'dosage_screen.pbw_mode.hot':
+        return 'Kettle / hot';
+      case 'dosage_screen.custom.factor_label':
+        return 'Factor (amount per litre of water)';
+      case 'dosage_screen.custom.factor_hint':
+        return 'e.g., 1.5';
+      case 'dosage_screen.custom.unit_label':
+        return 'Unit';
+      case 'dosage_screen.result.label':
+        return 'You need';
+      case 'dosage_screen.rinse.no':
+        return 'do not rinse';
+      case 'dosage_screen.rinse.yes':
+        return 'rinse well';
+      case 'dosage_screen.contact_time.starsan':
+        return '1–2 min';
+      case 'dosage_screen.contact_time.saniclean':
+        return '2–3 min';
+      case 'dosage_screen.contact_time.pbw':
+        return 'soak';
+      case 'dosage_screen.contact_time.chemipro_oxi':
+        return '2–5 min';
+      case 'dosage_screen.contact_time.custom':
+        return '—';
       default:
         return null;
     }

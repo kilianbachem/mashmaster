@@ -1,43 +1,335 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mashmaster/calc/dosagecalc.dart';
 import 'package:mashmaster/i18n/generated/translations.g.dart';
-import 'package:wiredash/wiredash.dart';
 
-class HomeScreenDosageCalc extends StatelessWidget {
+class HomeScreenDosageCalc extends StatefulWidget {
   const HomeScreenDosageCalc({super.key});
 
   @override
+  State<HomeScreenDosageCalc> createState() => _HomeScreenDosageCalcState();
+}
+
+class _HomeScreenDosageCalcState extends State<HomeScreenDosageCalc> {
+  DosageType _product = DosageType.starSan;
+  PbwMode _pbwMode = PbwMode.coldSide;
+  DosageUnit _customUnit = DosageUnit.milliliter;
+  final TextEditingController _waterCtrl = TextEditingController(text: '20');
+  final TextEditingController _customFactorCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _waterCtrl.addListener(() => setState(() {}));
+    _customFactorCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _waterCtrl.dispose();
+    _customFactorCtrl.dispose();
+    super.dispose();
+  }
+
+  double? _parseNumber(String raw) {
+    final cleaned = raw.replaceAll(',', '.').trim();
+    if (cleaned.isEmpty) return null;
+    final v = double.tryParse(cleaned);
+    if (v == null || v <= 0) return null;
+    return v;
+  }
+
+  DosageCalculation? _buildCalculation() {
+    if (_product == DosageType.custom) {
+      final factor = _parseNumber(_customFactorCtrl.text);
+      if (factor == null) return null;
+      return DosageCalculation(
+        type: DosageType.custom,
+        customFactor: factor,
+        customUnit: _customUnit,
+      );
+    }
+    return DosageCalculation(type: _product, pbwMode: _pbwMode);
+  }
+
+  String _productLabel(Translations t, DosageType type) {
+    switch (type) {
+      case DosageType.starSan:
+        return 'StarSan';
+      case DosageType.saniClean:
+        return 'SaniClean';
+      case DosageType.pbw:
+        return 'PBW';
+      case DosageType.chemiproOxi:
+        return 'ChemiPro Oxi';
+      case DosageType.custom:
+        return t.dosage_screen.products.custom;
+    }
+  }
+
+  String _contactTimeLabel(Translations t, DosageType type) {
+    switch (type) {
+      case DosageType.starSan:
+        return t.dosage_screen.contact_time.starsan;
+      case DosageType.saniClean:
+        return t.dosage_screen.contact_time.saniclean;
+      case DosageType.pbw:
+        return t.dosage_screen.contact_time.pbw;
+      case DosageType.chemiproOxi:
+        return t.dosage_screen.contact_time.chemipro_oxi;
+      case DosageType.custom:
+        return t.dosage_screen.contact_time.custom;
+    }
+  }
+
+  String _unitLabel(DosageUnit unit) {
+    switch (unit) {
+      case DosageUnit.milliliter:
+        return 'ml';
+      case DosageUnit.gram:
+        return 'g';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Center(
+    final t = Translations.of(context);
+    final liters = _parseNumber(_waterCtrl.text);
+    final calc = _buildCalculation();
+    final amount = (liters == null || calc == null) ? null : calc.amountFor(liters);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            t.generic.placeholder_label,
-            style: TextStyle(height: 3, fontSize: 20),
-            textAlign: TextAlign.center,
+          _SectionLabel(text: t.dosage_screen.section.product),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: DosageType.values.map((type) {
+              return ChoiceChip(
+                label: Text(_productLabel(t, type)),
+                selected: _product == type,
+                onSelected: (_) => setState(() => _product = type),
+              );
+            }).toList(),
           ),
-          ElevatedButton(
-            onPressed:
-                () => Wiredash.of(context).show(
-                  inheritMaterialTheme: true,
-                  options: WiredashFeedbackOptions(
-                    screenshot: ScreenshotPrompt.hidden,
-                    collectMetaData:
-                        (metaData) =>
-                            metaData..custom['feature'] = "Dosage Calc",
-                    labels: [
-                      Label(
-                        id: 'label-dq5xiouftc',
-                        title: 'Demand Ping',
-                        hidden: true,
-                      ),
+          if (_product == DosageType.pbw) ...[
+            const SizedBox(height: 20),
+            _SectionLabel(text: t.dosage_screen.section.application),
+            const SizedBox(height: 8),
+            SegmentedButton<PbwMode>(
+              segments: [
+                ButtonSegment(
+                  value: PbwMode.coldSide,
+                  label: Text(t.dosage_screen.pbw_mode.cold),
+                ),
+                ButtonSegment(
+                  value: PbwMode.hotSide,
+                  label: Text(t.dosage_screen.pbw_mode.hot),
+                ),
+              ],
+              selected: {_pbwMode},
+              onSelectionChanged: (s) => setState(() => _pbwMode = s.first),
+            ),
+          ],
+          if (_product == DosageType.custom) ...[
+            const SizedBox(height: 20),
+            _SectionLabel(text: t.dosage_screen.custom.factor_label),
+            const SizedBox(height: 8),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _customFactorCtrl,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                     ],
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: t.dosage_screen.custom.factor_hint,
+                      suffixText: '/L',
+                    ),
                   ),
                 ),
-            child: Text(t.generic.cta_label, style: TextStyle(fontSize: 16)),
+                const SizedBox(width: 12),
+                SegmentedButton<DosageUnit>(
+                  segments: const [
+                    ButtonSegment(
+                      value: DosageUnit.milliliter,
+                      label: Text('ml'),
+                    ),
+                    ButtonSegment(
+                      value: DosageUnit.gram,
+                      label: Text('g'),
+                    ),
+                  ],
+                  selected: {_customUnit},
+                  onSelectionChanged: (s) => setState(() => _customUnit = s.first),
+                ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 20),
+          _SectionLabel(text: t.dosage_screen.section.water),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _waterCtrl,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+            ],
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              suffixText: 'L',
+              hintText: t.dosage_screen.water_hint,
+            ),
+          ),
+          const SizedBox(height: 24),
+          _ResultCard(
+            productLabel: _productLabel(t, _product),
+            amount: amount,
+            unit: calc == null ? _customUnit : calc.unit,
+            noRinse: calc?.noRinse ?? true,
+            contactTime: _contactTimeLabel(t, _product),
+            showMeta: _product != DosageType.custom,
+            unitLabel: _unitLabel,
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+    );
+  }
+}
+
+class _ResultCard extends StatelessWidget {
+  final String productLabel;
+  final double? amount;
+  final DosageUnit unit;
+  final bool noRinse;
+  final String contactTime;
+  final bool showMeta;
+  final String Function(DosageUnit) unitLabel;
+
+  const _ResultCard({
+    required this.productLabel,
+    required this.amount,
+    required this.unit,
+    required this.noRinse,
+    required this.contactTime,
+    required this.showMeta,
+    required this.unitLabel,
+  });
+
+  String _format(double v) {
+    if (v >= 100) return v.toStringAsFixed(0);
+    if (v >= 10) return v.toStringAsFixed(1);
+    return v.toStringAsFixed(2);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final hasResult = amount != null;
+
+    return Card(
+      color: scheme.primaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              t.dosage_screen.result.label,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
+                  ),
+            ),
+            const SizedBox(height: 6),
+            RichText(
+              text: TextSpan(
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      color: scheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w600,
+                    ),
+                children: [
+                  TextSpan(text: hasResult ? _format(amount!) : '—'),
+                  TextSpan(
+                    text: ' ${unitLabel(unit)}',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              productLabel,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: scheme.onPrimaryContainer,
+                  ),
+            ),
+            if (showMeta) ...[
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 16,
+                runSpacing: 8,
+                children: [
+                  _MetaChip(icon: Icons.timer_outlined, label: contactTime),
+                  _MetaChip(
+                    icon: noRinse
+                        ? Icons.do_not_disturb_alt_outlined
+                        : Icons.water_drop_outlined,
+                    label: noRinse
+                        ? t.dosage_screen.rinse.no
+                        : t.dosage_screen.rinse.yes,
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MetaChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _MetaChip({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onPrimaryContainer;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 18, color: color.withValues(alpha: 0.8)),
+        const SizedBox(width: 6),
+        Text(label, style: TextStyle(color: color)),
+      ],
     );
   }
 }

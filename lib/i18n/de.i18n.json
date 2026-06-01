@@ -73,5 +73,39 @@
       "snackbar": "Daten gelöscht. Starte die App neu, um die Änderungen anzuwenden."
     },
     "placeholder-label": "Aktuell gibt es nur wenige Einstellungen für die App, da sie noch in der Beta ist.\n\nSchau gerne später wieder vorbei!"
+  },
+  "dosage_screen": {
+    "section": {
+      "product": "Produkt",
+      "application": "Anwendung",
+      "water": "Wassermenge"
+    },
+    "water_hint": "z.B. 20",
+    "products": {
+      "custom": "Eigener"
+    },
+    "pbw_mode": {
+      "cold": "Kaltseite",
+      "hot": "Kessel / heiß"
+    },
+    "custom": {
+      "factor_label": "Faktor (Menge je Liter Wasser)",
+      "factor_hint": "z.B. 1,5",
+      "unit_label": "Einheit"
+    },
+    "result": {
+      "label": "Du brauchst"
+    },
+    "rinse": {
+      "no": "nicht spülen",
+      "yes": "gut spülen"
+    },
+    "contact_time": {
+      "starsan": "1–2 Min",
+      "saniclean": "2–3 Min",
+      "pbw": "einweichen",
+      "chemipro_oxi": "2–5 Min",
+      "custom": "—"
+    }
   }
 }

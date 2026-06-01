@@ -73,5 +73,39 @@
             "snackbar": "Data deleted. Restart the app for the changes to take effect."
         },
         "placeholder-label": "There are currently very few settings for this app, since it is still in Beta.\n\nPlease come back later!"
+    },
+    "dosage_screen": {
+        "section": {
+            "product": "Product",
+            "application": "Application",
+            "water": "Water volume"
+        },
+        "water_hint": "e.g., 20",
+        "products": {
+            "custom": "Custom"
+        },
+        "pbw_mode": {
+            "cold": "Cold side",
+            "hot": "Kettle / hot"
+        },
+        "custom": {
+            "factor_label": "Factor (amount per litre of water)",
+            "factor_hint": "e.g., 1.5",
+            "unit_label": "Unit"
+        },
+        "result": {
+            "label": "You need"
+        },
+        "rinse": {
+            "no": "do not rinse",
+            "yes": "rinse well"
+        },
+        "contact_time": {
+            "starsan": "1–2 min",
+            "saniclean": "2–3 min",
+            "pbw": "soak",
+            "chemipro_oxi": "2–5 min",
+            "custom": "—"
+        }
     }
 }

@@ -1,37 +1,66 @@
-enum DosageType { pbw, chemiproOxi, starSan, custom }
+enum DosageType { starSan, saniClean, pbw, chemiproOxi, custom }
 
-typedef ConversionFunction = double Function(double input);
+enum DosageUnit { milliliter, gram }
+
+enum PbwMode { coldSide, hotSide }
+
+typedef ConversionFunction = double Function(double waterLiters);
 
 class DosageCalculation {
   final DosageType type;
-  final double conversionFactor;
+  final DosageUnit unit;
+  final double ratePerLiter;
+  final bool noRinse;
   final ConversionFunction conversionFn;
 
-  //Pre-Defined Conversions //FUTURE plug in the real conversion factors
-  static const Map<DosageType, double> _predefinedFactors = {
-    DosageType.pbw: 1.5,
-    DosageType.chemiproOxi: 3.8,
-    DosageType.starSan: 119.0,
+  static const Map<DosageType, double> _rates = {
+    DosageType.starSan: 1.5,
+    DosageType.saniClean: 2.6,
+    DosageType.chemiproOxi: 4.0,
   };
 
-  DosageCalculation._(this.type, this.conversionFactor, this.conversionFn);
+  static const Map<DosageType, DosageUnit> _units = {
+    DosageType.starSan: DosageUnit.milliliter,
+    DosageType.saniClean: DosageUnit.milliliter,
+    DosageType.pbw: DosageUnit.gram,
+    DosageType.chemiproOxi: DosageUnit.gram,
+  };
 
-  factory DosageCalculation({required DosageType type, double? customFactor}) {
-    double factor;
+  static const Map<DosageType, bool> _noRinse = {
+    DosageType.starSan: true,
+    DosageType.saniClean: true,
+    DosageType.pbw: false,
+    DosageType.chemiproOxi: true,
+  };
 
+  static const double _pbwColdSideRate = 6.0;
+  static const double _pbwHotSideRate = 10.0;
+
+  DosageCalculation._(this.type, this.unit, this.ratePerLiter, this.noRinse)
+      : conversionFn = ((waterLiters) => waterLiters * ratePerLiter);
+
+  factory DosageCalculation({
+    required DosageType type,
+    PbwMode pbwMode = PbwMode.coldSide,
+    double? customFactor,
+    DosageUnit? customUnit,
+  }) {
     if (type == DosageType.custom) {
-      if (customFactor == null) {
+      if (customFactor == null || customUnit == null) {
         throw ArgumentError(
-          "A custom factor must be provided for custom conversion",
+          'customFactor and customUnit must be provided for custom dosage',
         );
       }
-      factor = customFactor;
-    } else {
-      factor = _predefinedFactors[type]!;
+      return DosageCalculation._(type, customUnit, customFactor, true);
     }
 
-    return DosageCalculation._(type, factor, (input) => input * factor);
+    if (type == DosageType.pbw) {
+      final rate = pbwMode == PbwMode.coldSide ? _pbwColdSideRate : _pbwHotSideRate;
+      return DosageCalculation._(type, _units[type]!, rate, _noRinse[type]!);
+    }
+
+    return DosageCalculation._(type, _units[type]!, _rates[type]!, _noRinse[type]!);
   }
 
-  double convert(double input) => conversionFn(input);
+  double amountFor(double waterLiters) => conversionFn(waterLiters);
 }
