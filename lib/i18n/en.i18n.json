@@ -74,6 +74,38 @@
         },
         "placeholder-label": "There are currently very few settings for this app, since it is still in Beta.\n\nPlease come back later!"
     },
+    "general_screen": {
+        "section": {
+            "input": "Wort readings",
+            "result": "Result"
+        },
+        "labels": {
+            "og": "Original Gravity (OG)",
+            "fg": "Final Gravity (FG)",
+            "unit": "Unit",
+            "abv": "Alcohol by Volume",
+            "abw": "Alcohol by Weight",
+            "calories": "Calories",
+            "carbs": "Carbs",
+            "apparent_attenuation": "Apparent Attenuation",
+            "real_attenuation": "Real Attenuation",
+            "original_extract": "Original Extract",
+            "apparent_extract": "Apparent Extract",
+            "real_extract": "Real Extract"
+        },
+        "units": {
+            "sg": "SG",
+            "plato": "°Plato"
+        },
+        "per_100ml": "per 100 ml",
+        "hint": {
+            "og_plato": "e.g. 12.5",
+            "fg_plato": "e.g. 2.4",
+            "og_sg": "e.g. 1.050",
+            "fg_sg": "e.g. 1.010"
+        },
+        "info": "Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories."
+    },
     "dosage_screen": {
         "section": {
             "product": "Product",

@@ -54,6 +54,8 @@ class TranslationsDe extends Translations {
   @override
   late final _TranslationsSettingsScreenDe settings_screen = _TranslationsSettingsScreenDe._(_root);
   @override
+  late final _TranslationsGeneralScreenDe general_screen = _TranslationsGeneralScreenDe._(_root);
+  @override
   late final _TranslationsDosageScreenDe dosage_screen = _TranslationsDosageScreenDe._(_root);
 }
 
@@ -175,6 +177,27 @@ class _TranslationsSettingsScreenDe extends TranslationsSettingsScreenEn {
   @override
   String get placeholder_label =>
       'Aktuell gibt es nur wenige Einstellungen für die App, da sie noch in der Beta ist.\n\nSchau gerne später wieder vorbei!';
+}
+
+// Path: general_screen
+class _TranslationsGeneralScreenDe extends TranslationsGeneralScreenEn {
+  _TranslationsGeneralScreenDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  late final _TranslationsGeneralScreenSectionDe section = _TranslationsGeneralScreenSectionDe._(_root);
+  @override
+  late final _TranslationsGeneralScreenLabelsDe labels = _TranslationsGeneralScreenLabelsDe._(_root);
+  @override
+  late final _TranslationsGeneralScreenUnitsDe units = _TranslationsGeneralScreenUnitsDe._(_root);
+  @override
+  String get per_100ml => 'je 100 ml';
+  @override
+  late final _TranslationsGeneralScreenHintDe hint = _TranslationsGeneralScreenHintDe._(_root);
+  @override
+  String get info => 'Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen.';
 }
 
 // Path: dosage_screen
@@ -311,6 +334,82 @@ class _TranslationsSettingsScreenDeleteAppDataDe extends TranslationsSettingsScr
   late final _TranslationsSettingsScreenDeleteAppDataAlertDialogDe alert_dialog = _TranslationsSettingsScreenDeleteAppDataAlertDialogDe._(_root);
   @override
   String get snackbar => 'Daten gelöscht. Starte die App neu, um die Änderungen anzuwenden.';
+}
+
+// Path: general_screen.section
+class _TranslationsGeneralScreenSectionDe extends TranslationsGeneralScreenSectionEn {
+  _TranslationsGeneralScreenSectionDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get input => 'Würzewerte';
+  @override
+  String get result => 'Ergebnis';
+}
+
+// Path: general_screen.labels
+class _TranslationsGeneralScreenLabelsDe extends TranslationsGeneralScreenLabelsEn {
+  _TranslationsGeneralScreenLabelsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get og => 'Stammwürze (OG)';
+  @override
+  String get fg => 'Endvergärung (FG)';
+  @override
+  String get unit => 'Einheit';
+  @override
+  String get abv => 'Alkoholgehalt';
+  @override
+  String get abw => 'Alkohol nach Gewicht';
+  @override
+  String get calories => 'Kalorien';
+  @override
+  String get carbs => 'Kohlenhydrate';
+  @override
+  String get apparent_attenuation => 'Scheinbarer Vergärungsgrad';
+  @override
+  String get real_attenuation => 'Wirklicher Vergärungsgrad';
+  @override
+  String get original_extract => 'Stammwürzegehalt';
+  @override
+  String get apparent_extract => 'Scheinbarer Restextrakt';
+  @override
+  String get real_extract => 'Wirklicher Restextrakt';
+}
+
+// Path: general_screen.units
+class _TranslationsGeneralScreenUnitsDe extends TranslationsGeneralScreenUnitsEn {
+  _TranslationsGeneralScreenUnitsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get sg => 'SG';
+  @override
+  String get plato => '°Plato';
+}
+
+// Path: general_screen.hint
+class _TranslationsGeneralScreenHintDe extends TranslationsGeneralScreenHintEn {
+  _TranslationsGeneralScreenHintDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get og_plato => 'z.B. 12,5';
+  @override
+  String get fg_plato => 'z.B. 2,4';
+  @override
+  String get og_sg => 'z.B. 1,050';
+  @override
+  String get fg_sg => 'z.B. 1,010';
 }
 
 // Path: dosage_screen.section
@@ -519,6 +618,50 @@ extension on TranslationsDe {
         return 'Daten gelöscht. Starte die App neu, um die Änderungen anzuwenden.';
       case 'settings_screen.placeholder_label':
         return 'Aktuell gibt es nur wenige Einstellungen für die App, da sie noch in der Beta ist.\n\nSchau gerne später wieder vorbei!';
+      case 'general_screen.section.input':
+        return 'Würzewerte';
+      case 'general_screen.section.result':
+        return 'Ergebnis';
+      case 'general_screen.labels.og':
+        return 'Stammwürze (OG)';
+      case 'general_screen.labels.fg':
+        return 'Endvergärung (FG)';
+      case 'general_screen.labels.unit':
+        return 'Einheit';
+      case 'general_screen.labels.abv':
+        return 'Alkoholgehalt';
+      case 'general_screen.labels.abw':
+        return 'Alkohol nach Gewicht';
+      case 'general_screen.labels.calories':
+        return 'Kalorien';
+      case 'general_screen.labels.carbs':
+        return 'Kohlenhydrate';
+      case 'general_screen.labels.apparent_attenuation':
+        return 'Scheinbarer Vergärungsgrad';
+      case 'general_screen.labels.real_attenuation':
+        return 'Wirklicher Vergärungsgrad';
+      case 'general_screen.labels.original_extract':
+        return 'Stammwürzegehalt';
+      case 'general_screen.labels.apparent_extract':
+        return 'Scheinbarer Restextrakt';
+      case 'general_screen.labels.real_extract':
+        return 'Wirklicher Restextrakt';
+      case 'general_screen.units.sg':
+        return 'SG';
+      case 'general_screen.units.plato':
+        return '°Plato';
+      case 'general_screen.per_100ml':
+        return 'je 100 ml';
+      case 'general_screen.hint.og_plato':
+        return 'z.B. 12,5';
+      case 'general_screen.hint.fg_plato':
+        return 'z.B. 2,4';
+      case 'general_screen.hint.og_sg':
+        return 'z.B. 1,050';
+      case 'general_screen.hint.fg_sg':
+        return 'z.B. 1,010';
+      case 'general_screen.info':
+        return 'Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen.';
       case 'dosage_screen.section.product':
         return 'Produkt';
       case 'dosage_screen.section.application':

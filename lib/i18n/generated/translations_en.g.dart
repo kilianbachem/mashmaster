@@ -47,6 +47,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
   late final TranslationsHomeScreenCardsEn home_screen_cards = TranslationsHomeScreenCardsEn.internal(_root);
   late final TranslationsContactScreenEn contact_screen = TranslationsContactScreenEn.internal(_root);
   late final TranslationsSettingsScreenEn settings_screen = TranslationsSettingsScreenEn.internal(_root);
+  late final TranslationsGeneralScreenEn general_screen = TranslationsGeneralScreenEn.internal(_root);
   late final TranslationsDosageScreenEn dosage_screen = TranslationsDosageScreenEn.internal(_root);
 }
 
@@ -139,6 +140,21 @@ class TranslationsSettingsScreenEn {
   String get system_theme_switch => 'Use System Theme';
   late final TranslationsSettingsScreenDeleteAppDataEn delete_app_data = TranslationsSettingsScreenDeleteAppDataEn.internal(_root);
   String get placeholder_label => 'There are currently very few settings for this app, since it is still in Beta.\n\nPlease come back later!';
+}
+
+// Path: general_screen
+class TranslationsGeneralScreenEn {
+  TranslationsGeneralScreenEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  late final TranslationsGeneralScreenSectionEn section = TranslationsGeneralScreenSectionEn.internal(_root);
+  late final TranslationsGeneralScreenLabelsEn labels = TranslationsGeneralScreenLabelsEn.internal(_root);
+  late final TranslationsGeneralScreenUnitsEn units = TranslationsGeneralScreenUnitsEn.internal(_root);
+  String get per_100ml => 'per 100 ml';
+  late final TranslationsGeneralScreenHintEn hint = TranslationsGeneralScreenHintEn.internal(_root);
+  String get info => 'Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories.';
 }
 
 // Path: dosage_screen
@@ -247,6 +263,62 @@ class TranslationsSettingsScreenDeleteAppDataEn {
   String get button_label => 'Delete Now';
   late final TranslationsSettingsScreenDeleteAppDataAlertDialogEn alert_dialog = TranslationsSettingsScreenDeleteAppDataAlertDialogEn.internal(_root);
   String get snackbar => 'Data deleted. Restart the app for the changes to take effect.';
+}
+
+// Path: general_screen.section
+class TranslationsGeneralScreenSectionEn {
+  TranslationsGeneralScreenSectionEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get input => 'Wort readings';
+  String get result => 'Result';
+}
+
+// Path: general_screen.labels
+class TranslationsGeneralScreenLabelsEn {
+  TranslationsGeneralScreenLabelsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get og => 'Original Gravity (OG)';
+  String get fg => 'Final Gravity (FG)';
+  String get unit => 'Unit';
+  String get abv => 'Alcohol by Volume';
+  String get abw => 'Alcohol by Weight';
+  String get calories => 'Calories';
+  String get carbs => 'Carbs';
+  String get apparent_attenuation => 'Apparent Attenuation';
+  String get real_attenuation => 'Real Attenuation';
+  String get original_extract => 'Original Extract';
+  String get apparent_extract => 'Apparent Extract';
+  String get real_extract => 'Real Extract';
+}
+
+// Path: general_screen.units
+class TranslationsGeneralScreenUnitsEn {
+  TranslationsGeneralScreenUnitsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get sg => 'SG';
+  String get plato => '°Plato';
+}
+
+// Path: general_screen.hint
+class TranslationsGeneralScreenHintEn {
+  TranslationsGeneralScreenHintEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get og_plato => 'e.g. 12.5';
+  String get fg_plato => 'e.g. 2.4';
+  String get og_sg => 'e.g. 1.050';
+  String get fg_sg => 'e.g. 1.010';
 }
 
 // Path: dosage_screen.section
@@ -434,6 +506,50 @@ extension on Translations {
         return 'Data deleted. Restart the app for the changes to take effect.';
       case 'settings_screen.placeholder_label':
         return 'There are currently very few settings for this app, since it is still in Beta.\n\nPlease come back later!';
+      case 'general_screen.section.input':
+        return 'Wort readings';
+      case 'general_screen.section.result':
+        return 'Result';
+      case 'general_screen.labels.og':
+        return 'Original Gravity (OG)';
+      case 'general_screen.labels.fg':
+        return 'Final Gravity (FG)';
+      case 'general_screen.labels.unit':
+        return 'Unit';
+      case 'general_screen.labels.abv':
+        return 'Alcohol by Volume';
+      case 'general_screen.labels.abw':
+        return 'Alcohol by Weight';
+      case 'general_screen.labels.calories':
+        return 'Calories';
+      case 'general_screen.labels.carbs':
+        return 'Carbs';
+      case 'general_screen.labels.apparent_attenuation':
+        return 'Apparent Attenuation';
+      case 'general_screen.labels.real_attenuation':
+        return 'Real Attenuation';
+      case 'general_screen.labels.original_extract':
+        return 'Original Extract';
+      case 'general_screen.labels.apparent_extract':
+        return 'Apparent Extract';
+      case 'general_screen.labels.real_extract':
+        return 'Real Extract';
+      case 'general_screen.units.sg':
+        return 'SG';
+      case 'general_screen.units.plato':
+        return '°Plato';
+      case 'general_screen.per_100ml':
+        return 'per 100 ml';
+      case 'general_screen.hint.og_plato':
+        return 'e.g. 12.5';
+      case 'general_screen.hint.fg_plato':
+        return 'e.g. 2.4';
+      case 'general_screen.hint.og_sg':
+        return 'e.g. 1.050';
+      case 'general_screen.hint.fg_sg':
+        return 'e.g. 1.010';
+      case 'general_screen.info':
+        return 'Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories.';
       case 'dosage_screen.section.product':
         return 'Product';
       case 'dosage_screen.section.application':

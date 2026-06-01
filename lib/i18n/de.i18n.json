@@ -74,6 +74,38 @@
     },
     "placeholder-label": "Aktuell gibt es nur wenige Einstellungen für die App, da sie noch in der Beta ist.\n\nSchau gerne später wieder vorbei!"
   },
+  "general_screen": {
+    "section": {
+      "input": "Würzewerte",
+      "result": "Ergebnis"
+    },
+    "labels": {
+      "og": "Stammwürze (OG)",
+      "fg": "Endvergärung (FG)",
+      "unit": "Einheit",
+      "abv": "Alkoholgehalt",
+      "abw": "Alkohol nach Gewicht",
+      "calories": "Kalorien",
+      "carbs": "Kohlenhydrate",
+      "apparent_attenuation": "Scheinbarer Vergärungsgrad",
+      "real_attenuation": "Wirklicher Vergärungsgrad",
+      "original_extract": "Stammwürzegehalt",
+      "apparent_extract": "Scheinbarer Restextrakt",
+      "real_extract": "Wirklicher Restextrakt"
+    },
+    "units": {
+      "sg": "SG",
+      "plato": "°Plato"
+    },
+    "per_100ml": "je 100 ml",
+    "hint": {
+      "og_plato": "z.B. 12,5",
+      "fg_plato": "z.B. 2,4",
+      "og_sg": "z.B. 1,050",
+      "fg_sg": "z.B. 1,010"
+    },
+    "info": "Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen."
+  },
   "dosage_screen": {
     "section": {
       "product": "Produkt",
