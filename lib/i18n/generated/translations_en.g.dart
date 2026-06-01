@@ -48,6 +48,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
   late final TranslationsContactScreenEn contact_screen = TranslationsContactScreenEn.internal(_root);
   late final TranslationsSettingsScreenEn settings_screen = TranslationsSettingsScreenEn.internal(_root);
   late final TranslationsGeneralScreenEn general_screen = TranslationsGeneralScreenEn.internal(_root);
+  late final TranslationsRefractometerScreenEn refractometer_screen = TranslationsRefractometerScreenEn.internal(_root);
   late final TranslationsDosageScreenEn dosage_screen = TranslationsDosageScreenEn.internal(_root);
 }
 
@@ -155,6 +156,21 @@ class TranslationsGeneralScreenEn {
   String get per_100ml => 'per 100 ml';
   late final TranslationsGeneralScreenHintEn hint = TranslationsGeneralScreenHintEn.internal(_root);
   String get info => 'Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories.';
+  late final TranslationsGeneralScreenTabsEn tabs = TranslationsGeneralScreenTabsEn.internal(_root);
+}
+
+// Path: refractometer_screen
+class TranslationsRefractometerScreenEn {
+  TranslationsRefractometerScreenEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get fermented_wort => 'Fermented wort?';
+  late final TranslationsRefractometerScreenLabelsEn labels = TranslationsRefractometerScreenLabelsEn.internal(_root);
+  late final TranslationsRefractometerScreenHintEn hint = TranslationsRefractometerScreenHintEn.internal(_root);
+  String get info =>
+      'Enter your refractometer Brix reading to get your gravity measurement. If the wort is fermented you also have to enter your original gravity measurement.';
 }
 
 // Path: dosage_screen
@@ -319,6 +335,44 @@ class TranslationsGeneralScreenHintEn {
   String get fg_plato => 'e.g. 2.4';
   String get og_sg => 'e.g. 1.050';
   String get fg_sg => 'e.g. 1.010';
+}
+
+// Path: general_screen.tabs
+class TranslationsGeneralScreenTabsEn {
+  TranslationsGeneralScreenTabsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get abv => 'ABV / Calories';
+  String get refractometer => 'Refractometer';
+}
+
+// Path: refractometer_screen.labels
+class TranslationsRefractometerScreenLabelsEn {
+  TranslationsRefractometerScreenLabelsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get og => 'Original Gravity (OG)';
+  String get brix => 'Brix WRI';
+  String get correction_factor => 'Correction Factor';
+  String get gravity => 'Gravity';
+  String get abv => 'ABV';
+  String get abw => 'ABW';
+}
+
+// Path: refractometer_screen.hint
+class TranslationsRefractometerScreenHintEn {
+  TranslationsRefractometerScreenHintEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get og => 'e.g. 10.48';
+  String get brix => 'e.g. 6';
+  String get correction_factor => 'e.g. 1.04';
 }
 
 // Path: dosage_screen.section
@@ -550,6 +604,32 @@ extension on Translations {
         return 'e.g. 1.010';
       case 'general_screen.info':
         return 'Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories.';
+      case 'general_screen.tabs.abv':
+        return 'ABV / Calories';
+      case 'general_screen.tabs.refractometer':
+        return 'Refractometer';
+      case 'refractometer_screen.fermented_wort':
+        return 'Fermented wort?';
+      case 'refractometer_screen.labels.og':
+        return 'Original Gravity (OG)';
+      case 'refractometer_screen.labels.brix':
+        return 'Brix WRI';
+      case 'refractometer_screen.labels.correction_factor':
+        return 'Correction Factor';
+      case 'refractometer_screen.labels.gravity':
+        return 'Gravity';
+      case 'refractometer_screen.labels.abv':
+        return 'ABV';
+      case 'refractometer_screen.labels.abw':
+        return 'ABW';
+      case 'refractometer_screen.hint.og':
+        return 'e.g. 10.48';
+      case 'refractometer_screen.hint.brix':
+        return 'e.g. 6';
+      case 'refractometer_screen.hint.correction_factor':
+        return 'e.g. 1.04';
+      case 'refractometer_screen.info':
+        return 'Enter your refractometer Brix reading to get your gravity measurement. If the wort is fermented you also have to enter your original gravity measurement.';
       case 'dosage_screen.section.product':
         return 'Product';
       case 'dosage_screen.section.application':

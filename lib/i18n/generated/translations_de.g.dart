@@ -56,6 +56,8 @@ class TranslationsDe extends Translations {
   @override
   late final _TranslationsGeneralScreenDe general_screen = _TranslationsGeneralScreenDe._(_root);
   @override
+  late final _TranslationsRefractometerScreenDe refractometer_screen = _TranslationsRefractometerScreenDe._(_root);
+  @override
   late final _TranslationsDosageScreenDe dosage_screen = _TranslationsDosageScreenDe._(_root);
 }
 
@@ -198,6 +200,26 @@ class _TranslationsGeneralScreenDe extends TranslationsGeneralScreenEn {
   late final _TranslationsGeneralScreenHintDe hint = _TranslationsGeneralScreenHintDe._(_root);
   @override
   String get info => 'Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen.';
+  @override
+  late final _TranslationsGeneralScreenTabsDe tabs = _TranslationsGeneralScreenTabsDe._(_root);
+}
+
+// Path: refractometer_screen
+class _TranslationsRefractometerScreenDe extends TranslationsRefractometerScreenEn {
+  _TranslationsRefractometerScreenDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get fermented_wort => 'Vergorene Würze?';
+  @override
+  late final _TranslationsRefractometerScreenLabelsDe labels = _TranslationsRefractometerScreenLabelsDe._(_root);
+  @override
+  late final _TranslationsRefractometerScreenHintDe hint = _TranslationsRefractometerScreenHintDe._(_root);
+  @override
+  String get info =>
+      'Gib deinen Refraktometer-Brix-Wert ein, um die Gravity zu berechnen. Bei vergorener Würze musst du zusätzlich die Stammwürze angeben.';
 }
 
 // Path: dosage_screen
@@ -410,6 +432,55 @@ class _TranslationsGeneralScreenHintDe extends TranslationsGeneralScreenHintEn {
   String get og_sg => 'z.B. 1,050';
   @override
   String get fg_sg => 'z.B. 1,010';
+}
+
+// Path: general_screen.tabs
+class _TranslationsGeneralScreenTabsDe extends TranslationsGeneralScreenTabsEn {
+  _TranslationsGeneralScreenTabsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get abv => 'Alkohol / Kalorien';
+  @override
+  String get refractometer => 'Refraktometer';
+}
+
+// Path: refractometer_screen.labels
+class _TranslationsRefractometerScreenLabelsDe extends TranslationsRefractometerScreenLabelsEn {
+  _TranslationsRefractometerScreenLabelsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get og => 'Stammwürze (OG)';
+  @override
+  String get brix => 'Brix WRI';
+  @override
+  String get correction_factor => 'Korrekturfaktor';
+  @override
+  String get gravity => 'Gravity';
+  @override
+  String get abv => 'ABV';
+  @override
+  String get abw => 'ABW';
+}
+
+// Path: refractometer_screen.hint
+class _TranslationsRefractometerScreenHintDe extends TranslationsRefractometerScreenHintEn {
+  _TranslationsRefractometerScreenHintDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get og => 'z.B. 10,48';
+  @override
+  String get brix => 'z.B. 6';
+  @override
+  String get correction_factor => 'z.B. 1,04';
 }
 
 // Path: dosage_screen.section
@@ -662,6 +733,32 @@ extension on TranslationsDe {
         return 'z.B. 1,010';
       case 'general_screen.info':
         return 'Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen.';
+      case 'general_screen.tabs.abv':
+        return 'Alkohol / Kalorien';
+      case 'general_screen.tabs.refractometer':
+        return 'Refraktometer';
+      case 'refractometer_screen.fermented_wort':
+        return 'Vergorene Würze?';
+      case 'refractometer_screen.labels.og':
+        return 'Stammwürze (OG)';
+      case 'refractometer_screen.labels.brix':
+        return 'Brix WRI';
+      case 'refractometer_screen.labels.correction_factor':
+        return 'Korrekturfaktor';
+      case 'refractometer_screen.labels.gravity':
+        return 'Gravity';
+      case 'refractometer_screen.labels.abv':
+        return 'ABV';
+      case 'refractometer_screen.labels.abw':
+        return 'ABW';
+      case 'refractometer_screen.hint.og':
+        return 'z.B. 10,48';
+      case 'refractometer_screen.hint.brix':
+        return 'z.B. 6';
+      case 'refractometer_screen.hint.correction_factor':
+        return 'z.B. 1,04';
+      case 'refractometer_screen.info':
+        return 'Gib deinen Refraktometer-Brix-Wert ein, um die Gravity zu berechnen. Bei vergorener Würze musst du zusätzlich die Stammwürze angeben.';
       case 'dosage_screen.section.product':
         return 'Produkt';
       case 'dosage_screen.section.application':

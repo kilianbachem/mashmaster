@@ -104,7 +104,28 @@
             "og_sg": "e.g. 1.050",
             "fg_sg": "e.g. 1.010"
         },
-        "info": "Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories."
+        "info": "Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories.",
+        "tabs": {
+            "abv": "ABV / Calories",
+            "refractometer": "Refractometer"
+        }
+    },
+    "refractometer_screen": {
+        "fermented_wort": "Fermented wort?",
+        "labels": {
+            "og": "Original Gravity (OG)",
+            "brix": "Brix WRI",
+            "correction_factor": "Correction Factor",
+            "gravity": "Gravity",
+            "abv": "ABV",
+            "abw": "ABW"
+        },
+        "hint": {
+            "og": "e.g. 10.48",
+            "brix": "e.g. 6",
+            "correction_factor": "e.g. 1.04"
+        },
+        "info": "Enter your refractometer Brix reading to get your gravity measurement. If the wort is fermented you also have to enter your original gravity measurement."
     },
     "dosage_screen": {
         "section": {

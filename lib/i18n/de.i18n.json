@@ -104,7 +104,28 @@
       "og_sg": "z.B. 1,050",
       "fg_sg": "z.B. 1,010"
     },
-    "info": "Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen."
+    "info": "Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen.",
+    "tabs": {
+      "abv": "Alkohol / Kalorien",
+      "refractometer": "Refraktometer"
+    }
+  },
+  "refractometer_screen": {
+    "fermented_wort": "Vergorene Würze?",
+    "labels": {
+      "og": "Stammwürze (OG)",
+      "brix": "Brix WRI",
+      "correction_factor": "Korrekturfaktor",
+      "gravity": "Gravity",
+      "abv": "ABV",
+      "abw": "ABW"
+    },
+    "hint": {
+      "og": "z.B. 10,48",
+      "brix": "z.B. 6",
+      "correction_factor": "z.B. 1,04"
+    },
+    "info": "Gib deinen Refraktometer-Brix-Wert ein, um die Gravity zu berechnen. Bei vergorener Würze musst du zusätzlich die Stammwürze angeben."
   },
   "dosage_screen": {
     "section": {
