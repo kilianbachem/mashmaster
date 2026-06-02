@@ -13,7 +13,7 @@ class HomeScreenUnitCalc extends StatelessWidget {
 
     return DefaultTabController(
       length: 3,
-      initialIndex: 1, // Start with Weight tab open
+      initialIndex: 2, // Start with Temperature tab open
       child: Column(
         children: [
           Material(
@@ -33,7 +33,7 @@ class HomeScreenUnitCalc extends StatelessWidget {
               children: [
                 _PlaceholderBody(),
                 _WeightBody(),
-                _PlaceholderBody(),
+                _TemperatureBody(),
               ],
             ),
           ),
@@ -244,7 +244,7 @@ class _NumberField extends StatelessWidget {
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9.,\-]')),
       ],
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
@@ -275,6 +275,127 @@ class _InfoFooter extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _TemperatureBody extends StatefulWidget {
+  const _TemperatureBody();
+
+  @override
+  State<_TemperatureBody> createState() => _TemperatureBodyState();
+}
+
+class _TemperatureBodyState extends State<_TemperatureBody> {
+  final TextEditingController _cCtrl = TextEditingController();
+  final TextEditingController _kCtrl = TextEditingController();
+  final TextEditingController _fCtrl = TextEditingController();
+
+  bool _isUpdating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _cCtrl.addListener(() => _updateFrom(_cCtrl, 'c'));
+    _kCtrl.addListener(() => _updateFrom(_kCtrl, 'k'));
+    _fCtrl.addListener(() => _updateFrom(_fCtrl, 'f'));
+  }
+
+  @override
+  void dispose() {
+    _cCtrl.dispose();
+    _kCtrl.dispose();
+    _fCtrl.dispose();
+    super.dispose();
+  }
+
+  double? _parse(String raw) {
+    final cleaned = raw.replaceAll(',', '.').trim();
+    if (cleaned.isEmpty || cleaned == '.' || cleaned == '-') return null;
+    return double.tryParse(cleaned);
+  }
+
+  String _format(double v) {
+    if (v == 0) return '0';
+    String s = v.toStringAsFixed(4);
+    s = s.replaceAll(RegExp(r'0*$'), '');
+    if (s.endsWith('.')) {
+      s = s.substring(0, s.length - 1);
+    }
+    return s.replaceAll('.', ',');
+  }
+
+  void _updateFrom(TextEditingController sourceCtrl, String unit) {
+    if (_isUpdating) return;
+
+    final val = _parse(sourceCtrl.text);
+
+    if (val == null) {
+      _isUpdating = true;
+      if (unit != 'c') _cCtrl.clear();
+      if (unit != 'k') _kCtrl.clear();
+      if (unit != 'f') _fCtrl.clear();
+      _isUpdating = false;
+      return;
+    }
+
+    double celsius = 0;
+    switch (unit) {
+      case 'c':
+        celsius = val;
+        break;
+      case 'k':
+        celsius = TempUnitCalc.kToC(val);
+        break;
+      case 'f':
+        celsius = TempUnitCalc.fToC(val);
+        break;
+    }
+
+    _isUpdating = true;
+    if (unit != 'c') _cCtrl.text = _format(celsius);
+    if (unit != 'k') _kCtrl.text = _format(TempUnitCalc.cToK(celsius));
+    if (unit != 'f') _fCtrl.text = _format(TempUnitCalc.cToF(celsius));
+    _isUpdating = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _SectionLabel(text: t.unit_screen.sections.metric),
+          const SizedBox(height: 8),
+          _NumberField(
+            controller: _cCtrl,
+            labelText: t.unit_screen.temp_units.celsius,
+            hintText: '0',
+            suffixText: '°C',
+          ),
+          const SizedBox(height: 12),
+          _NumberField(
+            controller: _kCtrl,
+            labelText: t.unit_screen.temp_units.kelvin,
+            hintText: '0',
+            suffixText: 'K',
+          ),
+          const SizedBox(height: 24),
+          _SectionLabel(text: t.unit_screen.sections.us),
+          const SizedBox(height: 8),
+          _NumberField(
+            controller: _fCtrl,
+            labelText: t.unit_screen.temp_units.fahrenheit,
+            hintText: '0',
+            suffixText: '°F',
+          ),
+          const SizedBox(height: 24),
+          _InfoFooter(text: t.unit_screen.info_temp),
+        ],
+      ),
     );
   }
 }

@@ -226,6 +226,12 @@
       "ounces": "Unzen",
       "stones": "Stone"
     },
-    "info": "Nutze dieses Tool, um zwischen verschiedenen Gewichtseinheiten umzurechnen. Gib einen Wert in ein beliebiges Feld ein, die anderen Werte werden automatisch berechnet."
+    "temp_units": {
+      "celsius": "Celsius",
+      "kelvin": "Kelvin",
+      "fahrenheit": "Fahrenheit"
+    },
+    "info": "Nutze dieses Tool, um zwischen verschiedenen Gewichtseinheiten umzurechnen. Gib einen Wert in ein beliebiges Feld ein, die anderen Werte werden automatisch berechnet.",
+    "info_temp": "Nutze dieses Tool, um einfach zwischen verschiedenen Temperatureinheiten umzurechnen. Gib einen Wert in ein beliebiges aktives Feld ein, und das Tool rechnet den Wert automatisch in die entsprechenden Einheiten um."
   }
 }

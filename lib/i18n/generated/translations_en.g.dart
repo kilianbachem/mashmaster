@@ -231,8 +231,11 @@ class TranslationsUnitScreenEn {
   late final TranslationsUnitScreenTabsEn tabs = TranslationsUnitScreenTabsEn.internal(_root);
   late final TranslationsUnitScreenSectionsEn sections = TranslationsUnitScreenSectionsEn.internal(_root);
   late final TranslationsUnitScreenWeightUnitsEn weight_units = TranslationsUnitScreenWeightUnitsEn.internal(_root);
+  late final TranslationsUnitScreenTempUnitsEn temp_units = TranslationsUnitScreenTempUnitsEn.internal(_root);
   String get info =>
       'Use this tool to easily convert between various weight units. Enter a value in any of the fields, and the tool will automatically convert the value to the corresponding units.';
+  String get info_temp =>
+      'Use this tool to easily convert between various temperature units. Enter a value in any of the active fields, and the tool will automatically convert the value to the corresponding units.';
 }
 
 // Path: home_screen_cards.dosage_calc
@@ -624,6 +627,18 @@ class TranslationsUnitScreenWeightUnitsEn {
   String get stones => 'Stones';
 }
 
+// Path: unit_screen.temp_units
+class TranslationsUnitScreenTempUnitsEn {
+  TranslationsUnitScreenTempUnitsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get celsius => 'Celsius';
+  String get kelvin => 'Kelvin';
+  String get fahrenheit => 'Fahrenheit';
+}
+
 // Path: settings_screen.delete_app_data.alert_dialog
 class TranslationsSettingsScreenDeleteAppDataAlertDialogEn {
   TranslationsSettingsScreenDeleteAppDataAlertDialogEn.internal(this._root);
@@ -922,8 +937,16 @@ extension on Translations {
         return 'Ounces';
       case 'unit_screen.weight_units.stones':
         return 'Stones';
+      case 'unit_screen.temp_units.celsius':
+        return 'Celsius';
+      case 'unit_screen.temp_units.kelvin':
+        return 'Kelvin';
+      case 'unit_screen.temp_units.fahrenheit':
+        return 'Fahrenheit';
       case 'unit_screen.info':
         return 'Use this tool to easily convert between various weight units. Enter a value in any of the fields, and the tool will automatically convert the value to the corresponding units.';
+      case 'unit_screen.info_temp':
+        return 'Use this tool to easily convert between various temperature units. Enter a value in any of the active fields, and the tool will automatically convert the value to the corresponding units.';
       default:
         return null;
     }

@@ -303,8 +303,13 @@ class _TranslationsUnitScreenDe extends TranslationsUnitScreenEn {
   @override
   late final _TranslationsUnitScreenWeightUnitsDe weight_units = _TranslationsUnitScreenWeightUnitsDe._(_root);
   @override
+  late final _TranslationsUnitScreenTempUnitsDe temp_units = _TranslationsUnitScreenTempUnitsDe._(_root);
+  @override
   String get info =>
       'Nutze dieses Tool, um zwischen verschiedenen Gewichtseinheiten umzurechnen. Gib einen Wert in ein beliebiges Feld ein, die anderen Werte werden automatisch berechnet.';
+  @override
+  String get info_temp =>
+      'Nutze dieses Tool, um einfach zwischen verschiedenen Temperatureinheiten umzurechnen. Gib einen Wert in ein beliebiges aktives Feld ein, und das Tool rechnet den Wert automatisch in die entsprechenden Einheiten um.';
 }
 
 // Path: home_screen_cards.dosage_calc
@@ -804,6 +809,21 @@ class _TranslationsUnitScreenWeightUnitsDe extends TranslationsUnitScreenWeightU
   String get stones => 'Stone';
 }
 
+// Path: unit_screen.temp_units
+class _TranslationsUnitScreenTempUnitsDe extends TranslationsUnitScreenTempUnitsEn {
+  _TranslationsUnitScreenTempUnitsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get celsius => 'Celsius';
+  @override
+  String get kelvin => 'Kelvin';
+  @override
+  String get fahrenheit => 'Fahrenheit';
+}
+
 // Path: settings_screen.delete_app_data.alert_dialog
 class _TranslationsSettingsScreenDeleteAppDataAlertDialogDe extends TranslationsSettingsScreenDeleteAppDataAlertDialogEn {
   _TranslationsSettingsScreenDeleteAppDataAlertDialogDe._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1106,8 +1126,16 @@ extension on TranslationsDe {
         return 'Unzen';
       case 'unit_screen.weight_units.stones':
         return 'Stone';
+      case 'unit_screen.temp_units.celsius':
+        return 'Celsius';
+      case 'unit_screen.temp_units.kelvin':
+        return 'Kelvin';
+      case 'unit_screen.temp_units.fahrenheit':
+        return 'Fahrenheit';
       case 'unit_screen.info':
         return 'Nutze dieses Tool, um zwischen verschiedenen Gewichtseinheiten umzurechnen. Gib einen Wert in ein beliebiges Feld ein, die anderen Werte werden automatisch berechnet.';
+      case 'unit_screen.info_temp':
+        return 'Nutze dieses Tool, um einfach zwischen verschiedenen Temperatureinheiten umzurechnen. Gib einen Wert in ein beliebiges aktives Feld ein, und das Tool rechnet den Wert automatisch in die entsprechenden Einheiten um.';
       default:
         return null;
     }

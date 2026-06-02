@@ -226,6 +226,12 @@
             "ounces": "Ounces",
             "stones": "Stones"
         },
-        "info": "Use this tool to easily convert between various weight units. Enter a value in any of the fields, and the tool will automatically convert the value to the corresponding units."
+        "temp_units": {
+            "celsius": "Celsius",
+            "kelvin": "Kelvin",
+            "fahrenheit": "Fahrenheit"
+        },
+        "info": "Use this tool to easily convert between various weight units. Enter a value in any of the fields, and the tool will automatically convert the value to the corresponding units.",
+        "info_temp": "Use this tool to easily convert between various temperature units. Enter a value in any of the active fields, and the tool will automatically convert the value to the corresponding units."
     }
 }
