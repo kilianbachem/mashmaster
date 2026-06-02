@@ -106,8 +106,9 @@
         },
         "info": "Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories.",
         "tabs": {
-            "abv": "ABV / Calories",
-            "refractometer": "Refractometer"
+            "abv": "ABV",
+            "refractometer": "Refractometer",
+            "hydrometer": "Hydrometer"
         }
     },
     "refractometer_screen": {
@@ -126,6 +127,21 @@
             "correction_factor": "e.g. 1.04"
         },
         "info": "Enter your refractometer Brix reading to get your gravity measurement. If the wort is fermented you also have to enter your original gravity measurement."
+    },
+    "hydrometer_screen": {
+        "labels": {
+            "measured_gravity": "Measured Gravity",
+            "temperature": "Temperature",
+            "calibration_temp": "Calibration Temp.",
+            "corrected_gravity": "Gravity"
+        },
+        "hint": {
+            "measured_plato": "e.g. 2.6",
+            "measured_sg": "e.g. 1.010",
+            "temperature": "e.g. 21.7",
+            "calibration_temp": "20"
+        },
+        "info": "Enter your measured gravity and wort temperature to get the temperature-corrected gravity. The hydrometer calibration temperature is optional."
     },
     "dosage_screen": {
         "section": {

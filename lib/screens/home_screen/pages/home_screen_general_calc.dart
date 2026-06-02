@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mashmaster/calc/general_calc.dart';
+import 'package:mashmaster/calc/hydrometer_calc.dart';
 import 'package:mashmaster/calc/refractometer_calc.dart';
 import 'package:mashmaster/i18n/generated/translations.g.dart';
 
-enum _GeneralCalcTab { abv, refractometer }
+enum _GeneralCalcTab { abv, refractometer, hydrometer }
 
 class HomeScreenGeneralCalc extends StatefulWidget {
   const HomeScreenGeneralCalc({super.key});
@@ -25,6 +26,7 @@ class _HomeScreenGeneralCalcState extends State<HomeScreenGeneralCalc> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: SegmentedButton<_GeneralCalcTab>(
+            showSelectedIcon: false,
             segments: [
               ButtonSegment(
                 value: _GeneralCalcTab.abv,
@@ -34,15 +36,21 @@ class _HomeScreenGeneralCalcState extends State<HomeScreenGeneralCalc> {
                 value: _GeneralCalcTab.refractometer,
                 label: Text(t.general_screen.tabs.refractometer),
               ),
+              ButtonSegment(
+                value: _GeneralCalcTab.hydrometer,
+                label: Text(t.general_screen.tabs.hydrometer),
+              ),
             ],
             selected: {_tab},
             onSelectionChanged: (s) => setState(() => _tab = s.first),
           ),
         ),
         Expanded(
-          child: _tab == _GeneralCalcTab.abv
-              ? const _AbvCalcBody()
-              : const _RefractometerBody(),
+          child: switch (_tab) {
+            _GeneralCalcTab.abv => const _AbvCalcBody(),
+            _GeneralCalcTab.refractometer => const _RefractometerBody(),
+            _GeneralCalcTab.hydrometer => const _HydrometerBody(),
+          },
         ),
       ],
     );
@@ -243,6 +251,116 @@ class _RefractometerBodyState extends State<_RefractometerBody> {
 }
 
 // ---------------------------------------------------------------------------
+// Hydrometer temperature correction
+// ---------------------------------------------------------------------------
+
+class _HydrometerBody extends StatefulWidget {
+  const _HydrometerBody();
+
+  @override
+  State<_HydrometerBody> createState() => _HydrometerBodyState();
+}
+
+class _HydrometerBodyState extends State<_HydrometerBody> {
+  GravityUnit _unit = GravityUnit.plato;
+  final TextEditingController _measuredCtrl = TextEditingController();
+  final TextEditingController _wortTempCtrl = TextEditingController();
+  final TextEditingController _calibrationTempCtrl = TextEditingController(
+    text: HydrometerCorrection.defaultCalibrationTempC.toStringAsFixed(0),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _measuredCtrl.addListener(() => setState(() {}));
+    _wortTempCtrl.addListener(() => setState(() {}));
+    _calibrationTempCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _measuredCtrl.dispose();
+    _wortTempCtrl.dispose();
+    _calibrationTempCtrl.dispose();
+    super.dispose();
+  }
+
+  double? _compute() {
+    final measured = _parse(_measuredCtrl.text);
+    final wortTemp = _parse(_wortTempCtrl.text);
+    final calTemp = _parse(_calibrationTempCtrl.text);
+    if (measured == null || wortTemp == null || calTemp == null) return null;
+    return HydrometerCorrection.correct(
+      measuredGravity: measured,
+      unit: _unit,
+      wortTempC: wortTemp,
+      calibrationTempC: calTemp,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context);
+    final corrected = _compute();
+    final unitSuffix = _unit == GravityUnit.plato
+        ? t.general_screen.units.plato
+        : t.general_screen.units.sg;
+    final measuredHint = _unit == GravityUnit.plato
+        ? t.hydrometer_screen.hint.measured_plato
+        : t.hydrometer_screen.hint.measured_sg;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SegmentedButton<GravityUnit>(
+            showSelectedIcon: false,
+            segments: [
+              ButtonSegment(
+                value: GravityUnit.plato,
+                label: Text(t.general_screen.units.plato),
+              ),
+              ButtonSegment(
+                value: GravityUnit.specificGravity,
+                label: Text(t.general_screen.units.sg),
+              ),
+            ],
+            selected: {_unit},
+            onSelectionChanged: (s) => setState(() => _unit = s.first),
+          ),
+          const SizedBox(height: 16),
+          _NumberField(
+            controller: _measuredCtrl,
+            labelText: t.hydrometer_screen.labels.measured_gravity,
+            hintText: measuredHint,
+            suffixText: unitSuffix,
+          ),
+          const SizedBox(height: 12),
+          _NumberField(
+            controller: _wortTempCtrl,
+            labelText: t.hydrometer_screen.labels.temperature,
+            hintText: t.hydrometer_screen.hint.temperature,
+            suffixText: '°C',
+          ),
+          const SizedBox(height: 12),
+          _NumberField(
+            controller: _calibrationTempCtrl,
+            labelText: t.hydrometer_screen.labels.calibration_temp,
+            hintText: t.hydrometer_screen.hint.calibration_temp,
+            suffixText: '°C',
+          ),
+          const SizedBox(height: 24),
+          _HydrometerResultCard(corrected: corrected, unit: _unit),
+          const SizedBox(height: 16),
+          _InfoFooter(text: t.hydrometer_screen.info),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Result cards
 // ---------------------------------------------------------------------------
 
@@ -370,6 +488,47 @@ class _RefractometerResultCard extends StatelessWidget {
                     ),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HydrometerResultCard extends StatelessWidget {
+  final double? corrected;
+  final GravityUnit unit;
+  const _HydrometerResultCard({required this.corrected, required this.unit});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+
+    final unitLabel = unit == GravityUnit.plato
+        ? t.general_screen.units.plato
+        : t.general_screen.units.sg;
+    final value = corrected == null
+        ? '—'
+        : (unit == GravityUnit.plato
+            ? _fmtNumber(corrected!, 1)
+            : corrected!.toStringAsFixed(3));
+
+    return Card(
+      color: scheme.primaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              t.hydrometer_screen.labels.corrected_gravity,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
+                  ),
+            ),
+            const SizedBox(height: 4),
+            _BigNumber(value: value, unit: unitLabel),
           ],
         ),
       ),

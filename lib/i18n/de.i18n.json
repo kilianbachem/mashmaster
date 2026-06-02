@@ -106,8 +106,9 @@
     },
     "info": "Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen.",
     "tabs": {
-      "abv": "Alkohol / Kalorien",
-      "refractometer": "Refraktometer"
+      "abv": "Alkohol",
+      "refractometer": "Refraktometer",
+      "hydrometer": "Hydrometer"
     }
   },
   "refractometer_screen": {
@@ -126,6 +127,21 @@
       "correction_factor": "z.B. 1,04"
     },
     "info": "Gib deinen Refraktometer-Brix-Wert ein, um die Gravity zu berechnen. Bei vergorener Würze musst du zusätzlich die Stammwürze angeben."
+  },
+  "hydrometer_screen": {
+    "labels": {
+      "measured_gravity": "Gemessene Dichte",
+      "temperature": "Temperatur",
+      "calibration_temp": "Kalibrierungs-Temp.",
+      "corrected_gravity": "Gravity"
+    },
+    "hint": {
+      "measured_plato": "z.B. 2,6",
+      "measured_sg": "z.B. 1,010",
+      "temperature": "z.B. 21,7",
+      "calibration_temp": "20"
+    },
+    "info": "Gib die gemessene Dichte und die Würzetemperatur ein, um die temperaturkorrigierte Gravity zu erhalten. Die Kalibrierungstemperatur deines Hydrometers ist optional einstellbar."
   },
   "dosage_screen": {
     "section": {

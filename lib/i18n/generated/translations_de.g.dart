@@ -58,6 +58,8 @@ class TranslationsDe extends Translations {
   @override
   late final _TranslationsRefractometerScreenDe refractometer_screen = _TranslationsRefractometerScreenDe._(_root);
   @override
+  late final _TranslationsHydrometerScreenDe hydrometer_screen = _TranslationsHydrometerScreenDe._(_root);
+  @override
   late final _TranslationsDosageScreenDe dosage_screen = _TranslationsDosageScreenDe._(_root);
 }
 
@@ -220,6 +222,22 @@ class _TranslationsRefractometerScreenDe extends TranslationsRefractometerScreen
   @override
   String get info =>
       'Gib deinen Refraktometer-Brix-Wert ein, um die Gravity zu berechnen. Bei vergorener Würze musst du zusätzlich die Stammwürze angeben.';
+}
+
+// Path: hydrometer_screen
+class _TranslationsHydrometerScreenDe extends TranslationsHydrometerScreenEn {
+  _TranslationsHydrometerScreenDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  late final _TranslationsHydrometerScreenLabelsDe labels = _TranslationsHydrometerScreenLabelsDe._(_root);
+  @override
+  late final _TranslationsHydrometerScreenHintDe hint = _TranslationsHydrometerScreenHintDe._(_root);
+  @override
+  String get info =>
+      'Gib die gemessene Dichte und die Würzetemperatur ein, um die temperaturkorrigierte Gravity zu erhalten. Die Kalibrierungstemperatur deines Hydrometers ist optional einstellbar.';
 }
 
 // Path: dosage_screen
@@ -442,9 +460,11 @@ class _TranslationsGeneralScreenTabsDe extends TranslationsGeneralScreenTabsEn {
 
   // Translations
   @override
-  String get abv => 'Alkohol / Kalorien';
+  String get abv => 'Alkohol';
   @override
   String get refractometer => 'Refraktometer';
+  @override
+  String get hydrometer => 'Hydrometer';
 }
 
 // Path: refractometer_screen.labels
@@ -481,6 +501,40 @@ class _TranslationsRefractometerScreenHintDe extends TranslationsRefractometerSc
   String get brix => 'z.B. 6';
   @override
   String get correction_factor => 'z.B. 1,04';
+}
+
+// Path: hydrometer_screen.labels
+class _TranslationsHydrometerScreenLabelsDe extends TranslationsHydrometerScreenLabelsEn {
+  _TranslationsHydrometerScreenLabelsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get measured_gravity => 'Gemessene Dichte';
+  @override
+  String get temperature => 'Temperatur';
+  @override
+  String get calibration_temp => 'Kalibrierungs-Temp.';
+  @override
+  String get corrected_gravity => 'Gravity';
+}
+
+// Path: hydrometer_screen.hint
+class _TranslationsHydrometerScreenHintDe extends TranslationsHydrometerScreenHintEn {
+  _TranslationsHydrometerScreenHintDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get measured_plato => 'z.B. 2,6';
+  @override
+  String get measured_sg => 'z.B. 1,010';
+  @override
+  String get temperature => 'z.B. 21,7';
+  @override
+  String get calibration_temp => '20';
 }
 
 // Path: dosage_screen.section
@@ -734,9 +788,11 @@ extension on TranslationsDe {
       case 'general_screen.info':
         return 'Gib Stammwürze (OG) und Endvergärung (FG) ein, um Alkoholgehalt, Vergärungsgrad und Kalorien zu berechnen.';
       case 'general_screen.tabs.abv':
-        return 'Alkohol / Kalorien';
+        return 'Alkohol';
       case 'general_screen.tabs.refractometer':
         return 'Refraktometer';
+      case 'general_screen.tabs.hydrometer':
+        return 'Hydrometer';
       case 'refractometer_screen.fermented_wort':
         return 'Vergorene Würze?';
       case 'refractometer_screen.labels.og':
@@ -759,6 +815,24 @@ extension on TranslationsDe {
         return 'z.B. 1,04';
       case 'refractometer_screen.info':
         return 'Gib deinen Refraktometer-Brix-Wert ein, um die Gravity zu berechnen. Bei vergorener Würze musst du zusätzlich die Stammwürze angeben.';
+      case 'hydrometer_screen.labels.measured_gravity':
+        return 'Gemessene Dichte';
+      case 'hydrometer_screen.labels.temperature':
+        return 'Temperatur';
+      case 'hydrometer_screen.labels.calibration_temp':
+        return 'Kalibrierungs-Temp.';
+      case 'hydrometer_screen.labels.corrected_gravity':
+        return 'Gravity';
+      case 'hydrometer_screen.hint.measured_plato':
+        return 'z.B. 2,6';
+      case 'hydrometer_screen.hint.measured_sg':
+        return 'z.B. 1,010';
+      case 'hydrometer_screen.hint.temperature':
+        return 'z.B. 21,7';
+      case 'hydrometer_screen.hint.calibration_temp':
+        return '20';
+      case 'hydrometer_screen.info':
+        return 'Gib die gemessene Dichte und die Würzetemperatur ein, um die temperaturkorrigierte Gravity zu erhalten. Die Kalibrierungstemperatur deines Hydrometers ist optional einstellbar.';
       case 'dosage_screen.section.product':
         return 'Produkt';
       case 'dosage_screen.section.application':

@@ -49,6 +49,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
   late final TranslationsSettingsScreenEn settings_screen = TranslationsSettingsScreenEn.internal(_root);
   late final TranslationsGeneralScreenEn general_screen = TranslationsGeneralScreenEn.internal(_root);
   late final TranslationsRefractometerScreenEn refractometer_screen = TranslationsRefractometerScreenEn.internal(_root);
+  late final TranslationsHydrometerScreenEn hydrometer_screen = TranslationsHydrometerScreenEn.internal(_root);
   late final TranslationsDosageScreenEn dosage_screen = TranslationsDosageScreenEn.internal(_root);
 }
 
@@ -171,6 +172,19 @@ class TranslationsRefractometerScreenEn {
   late final TranslationsRefractometerScreenHintEn hint = TranslationsRefractometerScreenHintEn.internal(_root);
   String get info =>
       'Enter your refractometer Brix reading to get your gravity measurement. If the wort is fermented you also have to enter your original gravity measurement.';
+}
+
+// Path: hydrometer_screen
+class TranslationsHydrometerScreenEn {
+  TranslationsHydrometerScreenEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  late final TranslationsHydrometerScreenLabelsEn labels = TranslationsHydrometerScreenLabelsEn.internal(_root);
+  late final TranslationsHydrometerScreenHintEn hint = TranslationsHydrometerScreenHintEn.internal(_root);
+  String get info =>
+      'Enter your measured gravity and wort temperature to get the temperature-corrected gravity. The hydrometer calibration temperature is optional.';
 }
 
 // Path: dosage_screen
@@ -344,8 +358,9 @@ class TranslationsGeneralScreenTabsEn {
   final Translations _root; // ignore: unused_field
 
   // Translations
-  String get abv => 'ABV / Calories';
+  String get abv => 'ABV';
   String get refractometer => 'Refractometer';
+  String get hydrometer => 'Hydrometer';
 }
 
 // Path: refractometer_screen.labels
@@ -373,6 +388,32 @@ class TranslationsRefractometerScreenHintEn {
   String get og => 'e.g. 10.48';
   String get brix => 'e.g. 6';
   String get correction_factor => 'e.g. 1.04';
+}
+
+// Path: hydrometer_screen.labels
+class TranslationsHydrometerScreenLabelsEn {
+  TranslationsHydrometerScreenLabelsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get measured_gravity => 'Measured Gravity';
+  String get temperature => 'Temperature';
+  String get calibration_temp => 'Calibration Temp.';
+  String get corrected_gravity => 'Gravity';
+}
+
+// Path: hydrometer_screen.hint
+class TranslationsHydrometerScreenHintEn {
+  TranslationsHydrometerScreenHintEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get measured_plato => 'e.g. 2.6';
+  String get measured_sg => 'e.g. 1.010';
+  String get temperature => 'e.g. 21.7';
+  String get calibration_temp => '20';
 }
 
 // Path: dosage_screen.section
@@ -605,9 +646,11 @@ extension on Translations {
       case 'general_screen.info':
         return 'Enter Original Gravity (OG) and Final Gravity (FG) to calculate ABV, attenuation and calories.';
       case 'general_screen.tabs.abv':
-        return 'ABV / Calories';
+        return 'ABV';
       case 'general_screen.tabs.refractometer':
         return 'Refractometer';
+      case 'general_screen.tabs.hydrometer':
+        return 'Hydrometer';
       case 'refractometer_screen.fermented_wort':
         return 'Fermented wort?';
       case 'refractometer_screen.labels.og':
@@ -630,6 +673,24 @@ extension on Translations {
         return 'e.g. 1.04';
       case 'refractometer_screen.info':
         return 'Enter your refractometer Brix reading to get your gravity measurement. If the wort is fermented you also have to enter your original gravity measurement.';
+      case 'hydrometer_screen.labels.measured_gravity':
+        return 'Measured Gravity';
+      case 'hydrometer_screen.labels.temperature':
+        return 'Temperature';
+      case 'hydrometer_screen.labels.calibration_temp':
+        return 'Calibration Temp.';
+      case 'hydrometer_screen.labels.corrected_gravity':
+        return 'Gravity';
+      case 'hydrometer_screen.hint.measured_plato':
+        return 'e.g. 2.6';
+      case 'hydrometer_screen.hint.measured_sg':
+        return 'e.g. 1.010';
+      case 'hydrometer_screen.hint.temperature':
+        return 'e.g. 21.7';
+      case 'hydrometer_screen.hint.calibration_temp':
+        return '20';
+      case 'hydrometer_screen.info':
+        return 'Enter your measured gravity and wort temperature to get the temperature-corrected gravity. The hydrometer calibration temperature is optional.';
       case 'dosage_screen.section.product':
         return 'Product';
       case 'dosage_screen.section.application':
