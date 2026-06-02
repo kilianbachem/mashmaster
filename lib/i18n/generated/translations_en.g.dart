@@ -50,6 +50,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
   late final TranslationsGeneralScreenEn general_screen = TranslationsGeneralScreenEn.internal(_root);
   late final TranslationsRefractometerScreenEn refractometer_screen = TranslationsRefractometerScreenEn.internal(_root);
   late final TranslationsHydrometerScreenEn hydrometer_screen = TranslationsHydrometerScreenEn.internal(_root);
+  late final TranslationsCarbonationScreenEn carbonation_screen = TranslationsCarbonationScreenEn.internal(_root);
   late final TranslationsDosageScreenEn dosage_screen = TranslationsDosageScreenEn.internal(_root);
 }
 
@@ -185,6 +186,21 @@ class TranslationsHydrometerScreenEn {
   late final TranslationsHydrometerScreenHintEn hint = TranslationsHydrometerScreenHintEn.internal(_root);
   String get info =>
       'Enter your measured gravity and wort temperature to get the temperature-corrected gravity. The hydrometer calibration temperature is optional.';
+}
+
+// Path: carbonation_screen
+class TranslationsCarbonationScreenEn {
+  TranslationsCarbonationScreenEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  late final TranslationsCarbonationScreenLabelsEn labels = TranslationsCarbonationScreenLabelsEn.internal(_root);
+  late final TranslationsCarbonationScreenMethodsEn methods = TranslationsCarbonationScreenMethodsEn.internal(_root);
+  late final TranslationsCarbonationScreenHintEn hint = TranslationsCarbonationScreenHintEn.internal(_root);
+  late final TranslationsCarbonationScreenResultEn result = TranslationsCarbonationScreenResultEn.internal(_root);
+  String get info =>
+      'Pick a method and beer style. For natural carbonation with sugar, the peak fermentation temperature matters — it determines how much CO₂ is already dissolved in the beer.';
 }
 
 // Path: dosage_screen
@@ -361,6 +377,7 @@ class TranslationsGeneralScreenTabsEn {
   String get abv => 'ABV';
   String get refractometer => 'Refractometer';
   String get hydrometer => 'Hydrometer';
+  String get carbonation => 'Carbonation';
 }
 
 // Path: refractometer_screen.labels
@@ -414,6 +431,63 @@ class TranslationsHydrometerScreenHintEn {
   String get measured_sg => 'e.g. 1.010';
   String get temperature => 'e.g. 21.7';
   String get calibration_temp => '20';
+}
+
+// Path: carbonation_screen.labels
+class TranslationsCarbonationScreenLabelsEn {
+  TranslationsCarbonationScreenLabelsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get beer_style => 'Beer Style';
+  String get style_range => 'Carbonation range';
+  String get target_co2 => 'Carbonation';
+  String get method => 'Method';
+  String get bottling_volume => 'Bottling Volume';
+  String get keg_volume => 'Keg Volume';
+  String get peak_fermentation_temp => 'Peak Fermentation Temp';
+  String get carbonation_temp => 'Carbonation Temp';
+}
+
+// Path: carbonation_screen.methods
+class TranslationsCarbonationScreenMethodsEn {
+  TranslationsCarbonationScreenMethodsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get bottle_sugar => 'Bottle (sugar)';
+  String get keg_sugar => 'Keg (sugar)';
+  String get keg_force => 'Keg (force)';
+}
+
+// Path: carbonation_screen.hint
+class TranslationsCarbonationScreenHintEn {
+  TranslationsCarbonationScreenHintEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get volume => 'e.g. 20';
+  String get fermentation_temp => 'e.g. 20';
+  String get carbonation_temp => 'e.g. 4';
+}
+
+// Path: carbonation_screen.result
+class TranslationsCarbonationScreenResultEn {
+  TranslationsCarbonationScreenResultEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String sugar_bottle({required Object sugar, required Object volume, required Object temp, required Object target}) =>
+      '${sugar} g table sugar in ${volume} L, fermented at max ${temp} °C, for ${target} g/L CO₂';
+  String sugar_keg({required Object sugar, required Object volume, required Object temp, required Object target}) =>
+      '${sugar} g table sugar in ${volume} L keg at ${temp} °C for ${target} g/L CO₂';
+  String force_pressure({required Object bar, required Object temp, required Object target}) =>
+      '${bar} bar at ${temp} °C for about 1 week to reach ${target} g/L CO₂';
+  String current_co2({required Object co2}) => 'Currently ${co2} g/L CO₂ in the beer';
 }
 
 // Path: dosage_screen.section
@@ -651,6 +725,8 @@ extension on Translations {
         return 'Refractometer';
       case 'general_screen.tabs.hydrometer':
         return 'Hydrometer';
+      case 'general_screen.tabs.carbonation':
+        return 'Carbonation';
       case 'refractometer_screen.fermented_wort':
         return 'Fermented wort?';
       case 'refractometer_screen.labels.og':
@@ -691,6 +767,47 @@ extension on Translations {
         return '20';
       case 'hydrometer_screen.info':
         return 'Enter your measured gravity and wort temperature to get the temperature-corrected gravity. The hydrometer calibration temperature is optional.';
+      case 'carbonation_screen.labels.beer_style':
+        return 'Beer Style';
+      case 'carbonation_screen.labels.style_range':
+        return 'Carbonation range';
+      case 'carbonation_screen.labels.target_co2':
+        return 'Carbonation';
+      case 'carbonation_screen.labels.method':
+        return 'Method';
+      case 'carbonation_screen.labels.bottling_volume':
+        return 'Bottling Volume';
+      case 'carbonation_screen.labels.keg_volume':
+        return 'Keg Volume';
+      case 'carbonation_screen.labels.peak_fermentation_temp':
+        return 'Peak Fermentation Temp';
+      case 'carbonation_screen.labels.carbonation_temp':
+        return 'Carbonation Temp';
+      case 'carbonation_screen.methods.bottle_sugar':
+        return 'Bottle (sugar)';
+      case 'carbonation_screen.methods.keg_sugar':
+        return 'Keg (sugar)';
+      case 'carbonation_screen.methods.keg_force':
+        return 'Keg (force)';
+      case 'carbonation_screen.hint.volume':
+        return 'e.g. 20';
+      case 'carbonation_screen.hint.fermentation_temp':
+        return 'e.g. 20';
+      case 'carbonation_screen.hint.carbonation_temp':
+        return 'e.g. 4';
+      case 'carbonation_screen.result.sugar_bottle':
+        return ({required Object sugar, required Object volume, required Object temp, required Object target}) =>
+            '${sugar} g table sugar in ${volume} L, fermented at max ${temp} °C, for ${target} g/L CO₂';
+      case 'carbonation_screen.result.sugar_keg':
+        return ({required Object sugar, required Object volume, required Object temp, required Object target}) =>
+            '${sugar} g table sugar in ${volume} L keg at ${temp} °C for ${target} g/L CO₂';
+      case 'carbonation_screen.result.force_pressure':
+        return ({required Object bar, required Object temp, required Object target}) =>
+            '${bar} bar at ${temp} °C for about 1 week to reach ${target} g/L CO₂';
+      case 'carbonation_screen.result.current_co2':
+        return ({required Object co2}) => 'Currently ${co2} g/L CO₂ in the beer';
+      case 'carbonation_screen.info':
+        return 'Pick a method and beer style. For natural carbonation with sugar, the peak fermentation temperature matters — it determines how much CO₂ is already dissolved in the beer.';
       case 'dosage_screen.section.product':
         return 'Product';
       case 'dosage_screen.section.application':

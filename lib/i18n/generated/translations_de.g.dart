@@ -60,6 +60,8 @@ class TranslationsDe extends Translations {
   @override
   late final _TranslationsHydrometerScreenDe hydrometer_screen = _TranslationsHydrometerScreenDe._(_root);
   @override
+  late final _TranslationsCarbonationScreenDe carbonation_screen = _TranslationsCarbonationScreenDe._(_root);
+  @override
   late final _TranslationsDosageScreenDe dosage_screen = _TranslationsDosageScreenDe._(_root);
 }
 
@@ -238,6 +240,26 @@ class _TranslationsHydrometerScreenDe extends TranslationsHydrometerScreenEn {
   @override
   String get info =>
       'Gib die gemessene Dichte und die Würzetemperatur ein, um die temperaturkorrigierte Gravity zu erhalten. Die Kalibrierungstemperatur deines Hydrometers ist optional einstellbar.';
+}
+
+// Path: carbonation_screen
+class _TranslationsCarbonationScreenDe extends TranslationsCarbonationScreenEn {
+  _TranslationsCarbonationScreenDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  late final _TranslationsCarbonationScreenLabelsDe labels = _TranslationsCarbonationScreenLabelsDe._(_root);
+  @override
+  late final _TranslationsCarbonationScreenMethodsDe methods = _TranslationsCarbonationScreenMethodsDe._(_root);
+  @override
+  late final _TranslationsCarbonationScreenHintDe hint = _TranslationsCarbonationScreenHintDe._(_root);
+  @override
+  late final _TranslationsCarbonationScreenResultDe result = _TranslationsCarbonationScreenResultDe._(_root);
+  @override
+  String get info =>
+      'Wähle Methode und Bierstil. Bei natürlicher Karbonisierung mit Zucker zählt die höchste Gärtemperatur — sie bestimmt, wie viel CO₂ schon im Bier gelöst ist.';
 }
 
 // Path: dosage_screen
@@ -465,6 +487,8 @@ class _TranslationsGeneralScreenTabsDe extends TranslationsGeneralScreenTabsEn {
   String get refractometer => 'Refraktometer';
   @override
   String get hydrometer => 'Hydrometer';
+  @override
+  String get carbonation => 'Karbonisierung';
 }
 
 // Path: refractometer_screen.labels
@@ -535,6 +559,81 @@ class _TranslationsHydrometerScreenHintDe extends TranslationsHydrometerScreenHi
   String get temperature => 'z.B. 21,7';
   @override
   String get calibration_temp => '20';
+}
+
+// Path: carbonation_screen.labels
+class _TranslationsCarbonationScreenLabelsDe extends TranslationsCarbonationScreenLabelsEn {
+  _TranslationsCarbonationScreenLabelsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get beer_style => 'Bierstil';
+  @override
+  String get style_range => 'Karbonisierungs-Bereich';
+  @override
+  String get target_co2 => 'Karbonisierung';
+  @override
+  String get method => 'Methode';
+  @override
+  String get bottling_volume => 'Abfüllmenge';
+  @override
+  String get keg_volume => 'Keg-Volumen';
+  @override
+  String get peak_fermentation_temp => 'Höchste Gärtemperatur';
+  @override
+  String get carbonation_temp => 'Karbonisierungs-Temp.';
+}
+
+// Path: carbonation_screen.methods
+class _TranslationsCarbonationScreenMethodsDe extends TranslationsCarbonationScreenMethodsEn {
+  _TranslationsCarbonationScreenMethodsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get bottle_sugar => 'Flasche (Zucker)';
+  @override
+  String get keg_sugar => 'Keg (Zucker)';
+  @override
+  String get keg_force => 'Keg (Druck)';
+}
+
+// Path: carbonation_screen.hint
+class _TranslationsCarbonationScreenHintDe extends TranslationsCarbonationScreenHintEn {
+  _TranslationsCarbonationScreenHintDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get volume => 'z.B. 20';
+  @override
+  String get fermentation_temp => 'z.B. 20';
+  @override
+  String get carbonation_temp => 'z.B. 4';
+}
+
+// Path: carbonation_screen.result
+class _TranslationsCarbonationScreenResultDe extends TranslationsCarbonationScreenResultEn {
+  _TranslationsCarbonationScreenResultDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String sugar_bottle({required Object sugar, required Object volume, required Object temp, required Object target}) =>
+      '${sugar} g Haushaltszucker in ${volume} L, vergoren bei max. ${temp} °C, für ${target} g/L CO₂';
+  @override
+  String sugar_keg({required Object sugar, required Object volume, required Object temp, required Object target}) =>
+      '${sugar} g Haushaltszucker im Keg (${volume} L) bei ${temp} °C für ${target} g/L CO₂';
+  @override
+  String force_pressure({required Object bar, required Object temp, required Object target}) =>
+      '${bar} bar bei ${temp} °C für ca. 1 Woche, um ${target} g/L CO₂ zu erreichen';
+  @override
+  String current_co2({required Object co2}) => 'Aktuell ${co2} g/L CO₂ im Bier';
 }
 
 // Path: dosage_screen.section
@@ -793,6 +892,8 @@ extension on TranslationsDe {
         return 'Refraktometer';
       case 'general_screen.tabs.hydrometer':
         return 'Hydrometer';
+      case 'general_screen.tabs.carbonation':
+        return 'Karbonisierung';
       case 'refractometer_screen.fermented_wort':
         return 'Vergorene Würze?';
       case 'refractometer_screen.labels.og':
@@ -833,6 +934,47 @@ extension on TranslationsDe {
         return '20';
       case 'hydrometer_screen.info':
         return 'Gib die gemessene Dichte und die Würzetemperatur ein, um die temperaturkorrigierte Gravity zu erhalten. Die Kalibrierungstemperatur deines Hydrometers ist optional einstellbar.';
+      case 'carbonation_screen.labels.beer_style':
+        return 'Bierstil';
+      case 'carbonation_screen.labels.style_range':
+        return 'Karbonisierungs-Bereich';
+      case 'carbonation_screen.labels.target_co2':
+        return 'Karbonisierung';
+      case 'carbonation_screen.labels.method':
+        return 'Methode';
+      case 'carbonation_screen.labels.bottling_volume':
+        return 'Abfüllmenge';
+      case 'carbonation_screen.labels.keg_volume':
+        return 'Keg-Volumen';
+      case 'carbonation_screen.labels.peak_fermentation_temp':
+        return 'Höchste Gärtemperatur';
+      case 'carbonation_screen.labels.carbonation_temp':
+        return 'Karbonisierungs-Temp.';
+      case 'carbonation_screen.methods.bottle_sugar':
+        return 'Flasche (Zucker)';
+      case 'carbonation_screen.methods.keg_sugar':
+        return 'Keg (Zucker)';
+      case 'carbonation_screen.methods.keg_force':
+        return 'Keg (Druck)';
+      case 'carbonation_screen.hint.volume':
+        return 'z.B. 20';
+      case 'carbonation_screen.hint.fermentation_temp':
+        return 'z.B. 20';
+      case 'carbonation_screen.hint.carbonation_temp':
+        return 'z.B. 4';
+      case 'carbonation_screen.result.sugar_bottle':
+        return ({required Object sugar, required Object volume, required Object temp, required Object target}) =>
+            '${sugar} g Haushaltszucker in ${volume} L, vergoren bei max. ${temp} °C, für ${target} g/L CO₂';
+      case 'carbonation_screen.result.sugar_keg':
+        return ({required Object sugar, required Object volume, required Object temp, required Object target}) =>
+            '${sugar} g Haushaltszucker im Keg (${volume} L) bei ${temp} °C für ${target} g/L CO₂';
+      case 'carbonation_screen.result.force_pressure':
+        return ({required Object bar, required Object temp, required Object target}) =>
+            '${bar} bar bei ${temp} °C für ca. 1 Woche, um ${target} g/L CO₂ zu erreichen';
+      case 'carbonation_screen.result.current_co2':
+        return ({required Object co2}) => 'Aktuell ${co2} g/L CO₂ im Bier';
+      case 'carbonation_screen.info':
+        return 'Wähle Methode und Bierstil. Bei natürlicher Karbonisierung mit Zucker zählt die höchste Gärtemperatur — sie bestimmt, wie viel CO₂ schon im Bier gelöst ist.';
       case 'dosage_screen.section.product':
         return 'Produkt';
       case 'dosage_screen.section.application':

@@ -108,7 +108,8 @@
         "tabs": {
             "abv": "ABV",
             "refractometer": "Refractometer",
-            "hydrometer": "Hydrometer"
+            "hydrometer": "Hydrometer",
+            "carbonation": "Carbonation"
         }
     },
     "refractometer_screen": {
@@ -142,6 +143,35 @@
             "calibration_temp": "20"
         },
         "info": "Enter your measured gravity and wort temperature to get the temperature-corrected gravity. The hydrometer calibration temperature is optional."
+    },
+    "carbonation_screen": {
+        "labels": {
+            "beer_style": "Beer Style",
+            "style_range": "Carbonation range",
+            "target_co2": "Carbonation",
+            "method": "Method",
+            "bottling_volume": "Bottling Volume",
+            "keg_volume": "Keg Volume",
+            "peak_fermentation_temp": "Peak Fermentation Temp",
+            "carbonation_temp": "Carbonation Temp"
+        },
+        "methods": {
+            "bottle_sugar": "Bottle (sugar)",
+            "keg_sugar": "Keg (sugar)",
+            "keg_force": "Keg (force)"
+        },
+        "hint": {
+            "volume": "e.g. 20",
+            "fermentation_temp": "e.g. 20",
+            "carbonation_temp": "e.g. 4"
+        },
+        "result": {
+            "sugar_bottle": "${sugar} g table sugar in ${volume} L, fermented at max ${temp} °C, for ${target} g/L CO₂",
+            "sugar_keg": "${sugar} g table sugar in ${volume} L keg at ${temp} °C for ${target} g/L CO₂",
+            "force_pressure": "${bar} bar at ${temp} °C for about 1 week to reach ${target} g/L CO₂",
+            "current_co2": "Currently ${co2} g/L CO₂ in the beer"
+        },
+        "info": "Pick a method and beer style. For natural carbonation with sugar, the peak fermentation temperature matters — it determines how much CO₂ is already dissolved in the beer."
     },
     "dosage_screen": {
         "section": {

@@ -52,3 +52,6 @@ app.*.map.json
 
 # App Signing
 *.jks
+
+# Claude Code (local agent config — user-specific paths, not for sharing)
+.claude/

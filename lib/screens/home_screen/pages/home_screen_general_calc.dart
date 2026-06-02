@@ -1,58 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mashmaster/calc/carbonation_calc.dart';
 import 'package:mashmaster/calc/general_calc.dart';
 import 'package:mashmaster/calc/hydrometer_calc.dart';
 import 'package:mashmaster/calc/refractometer_calc.dart';
+import 'package:mashmaster/data/beer_styles.dart';
 import 'package:mashmaster/i18n/generated/translations.g.dart';
 
-enum _GeneralCalcTab { abv, refractometer, hydrometer }
-
-class HomeScreenGeneralCalc extends StatefulWidget {
+class HomeScreenGeneralCalc extends StatelessWidget {
   const HomeScreenGeneralCalc({super.key});
-
-  @override
-  State<HomeScreenGeneralCalc> createState() => _HomeScreenGeneralCalcState();
-}
-
-class _HomeScreenGeneralCalcState extends State<HomeScreenGeneralCalc> {
-  _GeneralCalcTab _tab = _GeneralCalcTab.abv;
 
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context);
+    final scheme = Theme.of(context).colorScheme;
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: SegmentedButton<_GeneralCalcTab>(
-            showSelectedIcon: false,
-            segments: [
-              ButtonSegment(
-                value: _GeneralCalcTab.abv,
-                label: Text(t.general_screen.tabs.abv),
-              ),
-              ButtonSegment(
-                value: _GeneralCalcTab.refractometer,
-                label: Text(t.general_screen.tabs.refractometer),
-              ),
-              ButtonSegment(
-                value: _GeneralCalcTab.hydrometer,
-                label: Text(t.general_screen.tabs.hydrometer),
-              ),
-            ],
-            selected: {_tab},
-            onSelectionChanged: (s) => setState(() => _tab = s.first),
+    return DefaultTabController(
+      length: 4,
+      child: Column(
+        children: [
+          Material(
+            color: scheme.surface,
+            child: TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              tabs: [
+                Tab(text: t.general_screen.tabs.abv),
+                Tab(text: t.general_screen.tabs.refractometer),
+                Tab(text: t.general_screen.tabs.hydrometer),
+                Tab(text: t.general_screen.tabs.carbonation),
+              ],
+            ),
           ),
-        ),
-        Expanded(
-          child: switch (_tab) {
-            _GeneralCalcTab.abv => const _AbvCalcBody(),
-            _GeneralCalcTab.refractometer => const _RefractometerBody(),
-            _GeneralCalcTab.hydrometer => const _HydrometerBody(),
-          },
-        ),
-      ],
+          const Expanded(
+            child: TabBarView(
+              children: [
+                _AbvCalcBody(),
+                _RefractometerBody(),
+                _HydrometerBody(),
+                _CarbonationBody(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -361,6 +352,200 @@ class _HydrometerBodyState extends State<_HydrometerBody> {
 }
 
 // ---------------------------------------------------------------------------
+// Carbonation calculator
+// ---------------------------------------------------------------------------
+
+class _CarbonationBody extends StatefulWidget {
+  const _CarbonationBody();
+
+  @override
+  State<_CarbonationBody> createState() => _CarbonationBodyState();
+}
+
+class _CarbonationBodyState extends State<_CarbonationBody> {
+  BeerStyle _style = beerStyles.first;
+  CarbonationMethod _method = CarbonationMethod.bottleSugar;
+
+  late final TextEditingController _targetCo2Ctrl;
+  final TextEditingController _volumeCtrl = TextEditingController(text: '20');
+  final TextEditingController _fermTempCtrl = TextEditingController(text: '20');
+  final TextEditingController _carbTempCtrl = TextEditingController(text: '4');
+
+  @override
+  void initState() {
+    super.initState();
+    _targetCo2Ctrl = TextEditingController(
+      text: _formatGpl(_style.minCo2GramsPerLiter),
+    );
+    _targetCo2Ctrl.addListener(() => setState(() {}));
+    _volumeCtrl.addListener(() => setState(() {}));
+    _fermTempCtrl.addListener(() => setState(() {}));
+    _carbTempCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _targetCo2Ctrl.dispose();
+    _volumeCtrl.dispose();
+    _fermTempCtrl.dispose();
+    _carbTempCtrl.dispose();
+    super.dispose();
+  }
+
+  void _onStyleSelected(BeerStyle? style) {
+    if (style == null) return;
+    setState(() {
+      _style = style;
+      _targetCo2Ctrl.text = _formatGpl(style.minCo2GramsPerLiter);
+    });
+  }
+
+  String _formatGpl(double v) => v.toStringAsFixed(1).replaceAll('.', ',');
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context);
+    final target = _parse(_targetCo2Ctrl.text);
+    final volume = _parse(_volumeCtrl.text);
+    final fermTemp = _parse(_fermTempCtrl.text);
+    final carbTemp = _parse(_carbTempCtrl.text);
+
+    CarbonationSugarResult? sugarResult;
+    CarbonationPressureResult? pressureResult;
+    if (target != null) {
+      switch (_method) {
+        case CarbonationMethod.bottleSugar:
+          if (volume != null && fermTemp != null) {
+            sugarResult = CarbonationCalculation.bottleSugar(
+              targetCo2GramsPerLiter: target,
+              bottlingVolumeLiters: volume,
+              peakFermentationTempC: fermTemp,
+            );
+          }
+        case CarbonationMethod.kegSugar:
+          if (volume != null && fermTemp != null) {
+            sugarResult = CarbonationCalculation.kegSugar(
+              targetCo2GramsPerLiter: target,
+              kegVolumeLiters: volume,
+              peakFermentationTempC: fermTemp,
+            );
+          }
+        case CarbonationMethod.kegForce:
+          if (carbTemp != null) {
+            pressureResult = CarbonationCalculation.forcePressure(
+              targetCo2GramsPerLiter: target,
+              carbonationTempC: carbTemp,
+            );
+          }
+      }
+    }
+
+    final isSugar = _method == CarbonationMethod.bottleSugar ||
+        _method == CarbonationMethod.kegSugar;
+    final volumeLabel = _method == CarbonationMethod.bottleSugar
+        ? t.carbonation_screen.labels.bottling_volume
+        : t.carbonation_screen.labels.keg_volume;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          DropdownMenu<BeerStyle>(
+            initialSelection: _style,
+            label: Text(t.carbonation_screen.labels.beer_style),
+            expandedInsets: EdgeInsets.zero,
+            onSelected: _onStyleSelected,
+            dropdownMenuEntries: beerStyles
+                .map((s) => DropdownMenuEntry<BeerStyle>(
+                      value: s,
+                      label: s.name,
+                    ))
+                .toList(),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Text(
+              '${t.carbonation_screen.labels.style_range}: '
+              '${_formatGpl(_style.minCo2GramsPerLiter)} – '
+              '${_formatGpl(_style.maxCo2GramsPerLiter)} g/L',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _NumberField(
+            controller: _targetCo2Ctrl,
+            labelText: t.carbonation_screen.labels.target_co2,
+            hintText: _formatGpl(_style.minCo2GramsPerLiter),
+            suffixText: 'g/L CO₂',
+          ),
+          const SizedBox(height: 16),
+          _SectionLabel(text: t.carbonation_screen.labels.method),
+          const SizedBox(height: 8),
+          SegmentedButton<CarbonationMethod>(
+            showSelectedIcon: false,
+            segments: [
+              ButtonSegment(
+                value: CarbonationMethod.bottleSugar,
+                label: Text(t.carbonation_screen.methods.bottle_sugar),
+              ),
+              ButtonSegment(
+                value: CarbonationMethod.kegSugar,
+                label: Text(t.carbonation_screen.methods.keg_sugar),
+              ),
+              ButtonSegment(
+                value: CarbonationMethod.kegForce,
+                label: Text(t.carbonation_screen.methods.keg_force),
+              ),
+            ],
+            selected: {_method},
+            onSelectionChanged: (s) => setState(() => _method = s.first),
+          ),
+          const SizedBox(height: 16),
+          if (isSugar) ...[
+            _NumberField(
+              controller: _volumeCtrl,
+              labelText: volumeLabel,
+              hintText: t.carbonation_screen.hint.volume,
+              suffixText: 'L',
+            ),
+            const SizedBox(height: 12),
+            _NumberField(
+              controller: _fermTempCtrl,
+              labelText: t.carbonation_screen.labels.peak_fermentation_temp,
+              hintText: t.carbonation_screen.hint.fermentation_temp,
+              suffixText: '°C',
+            ),
+          ] else ...[
+            _NumberField(
+              controller: _carbTempCtrl,
+              labelText: t.carbonation_screen.labels.carbonation_temp,
+              hintText: t.carbonation_screen.hint.carbonation_temp,
+              suffixText: '°C',
+            ),
+          ],
+          const SizedBox(height: 24),
+          _CarbonationResultCard(
+            method: _method,
+            target: target,
+            volume: volume,
+            fermTemp: fermTemp,
+            carbTemp: carbTemp,
+            sugarResult: sugarResult,
+            pressureResult: pressureResult,
+          ),
+          const SizedBox(height: 16),
+          _InfoFooter(text: t.carbonation_screen.info),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Result cards
 // ---------------------------------------------------------------------------
 
@@ -531,6 +716,116 @@ class _HydrometerResultCard extends StatelessWidget {
             _BigNumber(value: value, unit: unitLabel),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CarbonationResultCard extends StatelessWidget {
+  final CarbonationMethod method;
+  final double? target;
+  final double? volume;
+  final double? fermTemp;
+  final double? carbTemp;
+  final CarbonationSugarResult? sugarResult;
+  final CarbonationPressureResult? pressureResult;
+
+  const _CarbonationResultCard({
+    required this.method,
+    required this.target,
+    required this.volume,
+    required this.fermTemp,
+    required this.carbTemp,
+    required this.sugarResult,
+    required this.pressureResult,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final fg = scheme.onPrimaryContainer;
+
+    Widget body;
+    switch (method) {
+      case CarbonationMethod.bottleSugar:
+        if (sugarResult == null || target == null || volume == null || fermTemp == null) {
+          body = Text('—', style: TextStyle(color: fg, fontSize: 18));
+        } else {
+          body = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                t.carbonation_screen.result.sugar_bottle(
+                  sugar: _fmtNumber(sugarResult!.sugarGrams, 1),
+                  volume: _fmtNumber(volume!, 1),
+                  temp: _fmtNumber(fermTemp!, 1),
+                  target: _fmtNumber(target!, 1),
+                ),
+                style: TextStyle(color: fg, fontSize: 16, height: 1.4),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                t.carbonation_screen.result.current_co2(
+                  co2: _fmtNumber(sugarResult!.residualCo2GramsPerLiter, 1),
+                ),
+                style: TextStyle(
+                  color: fg.withValues(alpha: 0.7),
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          );
+        }
+      case CarbonationMethod.kegSugar:
+        if (sugarResult == null || target == null || volume == null || fermTemp == null) {
+          body = Text('—', style: TextStyle(color: fg, fontSize: 18));
+        } else {
+          body = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                t.carbonation_screen.result.sugar_keg(
+                  sugar: _fmtNumber(sugarResult!.sugarGrams, 1),
+                  volume: _fmtNumber(volume!, 1),
+                  temp: _fmtNumber(fermTemp!, 1),
+                  target: _fmtNumber(target!, 1),
+                ),
+                style: TextStyle(color: fg, fontSize: 16, height: 1.4),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                t.carbonation_screen.result.current_co2(
+                  co2: _fmtNumber(sugarResult!.residualCo2GramsPerLiter, 1),
+                ),
+                style: TextStyle(
+                  color: fg.withValues(alpha: 0.7),
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          );
+        }
+      case CarbonationMethod.kegForce:
+        if (pressureResult == null || target == null || carbTemp == null) {
+          body = Text('—', style: TextStyle(color: fg, fontSize: 18));
+        } else {
+          body = Text(
+            t.carbonation_screen.result.force_pressure(
+              bar: pressureResult!.bar.toStringAsFixed(2),
+              temp: _fmtNumber(carbTemp!, 1),
+              target: _fmtNumber(target!, 1),
+            ),
+            style: TextStyle(color: fg, fontSize: 16, height: 1.4),
+          );
+        }
+    }
+
+    return Card(
+      color: scheme.primaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: body,
       ),
     );
   }

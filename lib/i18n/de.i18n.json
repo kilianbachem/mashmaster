@@ -108,7 +108,8 @@
     "tabs": {
       "abv": "Alkohol",
       "refractometer": "Refraktometer",
-      "hydrometer": "Hydrometer"
+      "hydrometer": "Hydrometer",
+      "carbonation": "Karbonisierung"
     }
   },
   "refractometer_screen": {
@@ -142,6 +143,35 @@
       "calibration_temp": "20"
     },
     "info": "Gib die gemessene Dichte und die Würzetemperatur ein, um die temperaturkorrigierte Gravity zu erhalten. Die Kalibrierungstemperatur deines Hydrometers ist optional einstellbar."
+  },
+  "carbonation_screen": {
+    "labels": {
+      "beer_style": "Bierstil",
+      "style_range": "Karbonisierungs-Bereich",
+      "target_co2": "Karbonisierung",
+      "method": "Methode",
+      "bottling_volume": "Abfüllmenge",
+      "keg_volume": "Keg-Volumen",
+      "peak_fermentation_temp": "Höchste Gärtemperatur",
+      "carbonation_temp": "Karbonisierungs-Temp."
+    },
+    "methods": {
+      "bottle_sugar": "Flasche (Zucker)",
+      "keg_sugar": "Keg (Zucker)",
+      "keg_force": "Keg (Druck)"
+    },
+    "hint": {
+      "volume": "z.B. 20",
+      "fermentation_temp": "z.B. 20",
+      "carbonation_temp": "z.B. 4"
+    },
+    "result": {
+      "sugar_bottle": "${sugar} g Haushaltszucker in ${volume} L, vergoren bei max. ${temp} °C, für ${target} g/L CO₂",
+      "sugar_keg": "${sugar} g Haushaltszucker im Keg (${volume} L) bei ${temp} °C für ${target} g/L CO₂",
+      "force_pressure": "${bar} bar bei ${temp} °C für ca. 1 Woche, um ${target} g/L CO₂ zu erreichen",
+      "current_co2": "Aktuell ${co2} g/L CO₂ im Bier"
+    },
+    "info": "Wähle Methode und Bierstil. Bei natürlicher Karbonisierung mit Zucker zählt die höchste Gärtemperatur — sie bestimmt, wie viel CO₂ schon im Bier gelöst ist."
   },
   "dosage_screen": {
     "section": {
