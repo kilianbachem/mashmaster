@@ -63,6 +63,8 @@ class TranslationsDe extends Translations {
   late final _TranslationsCarbonationScreenDe carbonation_screen = _TranslationsCarbonationScreenDe._(_root);
   @override
   late final _TranslationsDosageScreenDe dosage_screen = _TranslationsDosageScreenDe._(_root);
+  @override
+  late final _TranslationsUnitScreenDe unit_screen = _TranslationsUnitScreenDe._(_root);
 }
 
 // Path: language
@@ -285,6 +287,24 @@ class _TranslationsDosageScreenDe extends TranslationsDosageScreenEn {
   late final _TranslationsDosageScreenRinseDe rinse = _TranslationsDosageScreenRinseDe._(_root);
   @override
   late final _TranslationsDosageScreenContactTimeDe contact_time = _TranslationsDosageScreenContactTimeDe._(_root);
+}
+
+// Path: unit_screen
+class _TranslationsUnitScreenDe extends TranslationsUnitScreenEn {
+  _TranslationsUnitScreenDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  late final _TranslationsUnitScreenTabsDe tabs = _TranslationsUnitScreenTabsDe._(_root);
+  @override
+  late final _TranslationsUnitScreenSectionsDe sections = _TranslationsUnitScreenSectionsDe._(_root);
+  @override
+  late final _TranslationsUnitScreenWeightUnitsDe weight_units = _TranslationsUnitScreenWeightUnitsDe._(_root);
+  @override
+  String get info =>
+      'Nutze dieses Tool, um zwischen verschiedenen Gewichtseinheiten umzurechnen. Gib einen Wert in ein beliebiges Feld ein, die anderen Werte werden automatisch berechnet.';
 }
 
 // Path: home_screen_cards.dosage_calc
@@ -735,6 +755,55 @@ class _TranslationsDosageScreenContactTimeDe extends TranslationsDosageScreenCon
   String get custom => '—';
 }
 
+// Path: unit_screen.tabs
+class _TranslationsUnitScreenTabsDe extends TranslationsUnitScreenTabsEn {
+  _TranslationsUnitScreenTabsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get volume => 'Volumen';
+  @override
+  String get weight => 'Gewicht';
+  @override
+  String get temperature => 'Temperatur';
+}
+
+// Path: unit_screen.sections
+class _TranslationsUnitScreenSectionsDe extends TranslationsUnitScreenSectionsEn {
+  _TranslationsUnitScreenSectionsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get metric => 'Metrisch';
+  @override
+  String get us => 'US';
+  @override
+  String get imperial => 'Imperial';
+}
+
+// Path: unit_screen.weight_units
+class _TranslationsUnitScreenWeightUnitsDe extends TranslationsUnitScreenWeightUnitsEn {
+  _TranslationsUnitScreenWeightUnitsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get kilograms => 'Kilogramm';
+  @override
+  String get grams => 'Gramm';
+  @override
+  String get pounds => 'Pfund';
+  @override
+  String get ounces => 'Unzen';
+  @override
+  String get stones => 'Stone';
+}
+
 // Path: settings_screen.delete_app_data.alert_dialog
 class _TranslationsSettingsScreenDeleteAppDataAlertDialogDe extends TranslationsSettingsScreenDeleteAppDataAlertDialogEn {
   _TranslationsSettingsScreenDeleteAppDataAlertDialogDe._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1015,6 +1084,30 @@ extension on TranslationsDe {
         return '30 Min einweichen';
       case 'dosage_screen.contact_time.custom':
         return '—';
+      case 'unit_screen.tabs.volume':
+        return 'Volumen';
+      case 'unit_screen.tabs.weight':
+        return 'Gewicht';
+      case 'unit_screen.tabs.temperature':
+        return 'Temperatur';
+      case 'unit_screen.sections.metric':
+        return 'Metrisch';
+      case 'unit_screen.sections.us':
+        return 'US';
+      case 'unit_screen.sections.imperial':
+        return 'Imperial';
+      case 'unit_screen.weight_units.kilograms':
+        return 'Kilogramm';
+      case 'unit_screen.weight_units.grams':
+        return 'Gramm';
+      case 'unit_screen.weight_units.pounds':
+        return 'Pfund';
+      case 'unit_screen.weight_units.ounces':
+        return 'Unzen';
+      case 'unit_screen.weight_units.stones':
+        return 'Stone';
+      case 'unit_screen.info':
+        return 'Nutze dieses Tool, um zwischen verschiedenen Gewichtseinheiten umzurechnen. Gib einen Wert in ein beliebiges Feld ein, die anderen Werte werden automatisch berechnet.';
       default:
         return null;
     }

@@ -207,5 +207,25 @@
             "enzybrew": "30 min soak",
             "custom": "—"
         }
+    },
+    "unit_screen": {
+        "tabs": {
+            "volume": "Volume",
+            "weight": "Weight",
+            "temperature": "Temperature"
+        },
+        "sections": {
+            "metric": "Metric",
+            "us": "US",
+            "imperial": "Imperial"
+        },
+        "weight_units": {
+            "kilograms": "Kilograms",
+            "grams": "Grams",
+            "pounds": "Pounds",
+            "ounces": "Ounces",
+            "stones": "Stones"
+        },
+        "info": "Use this tool to easily convert between various weight units. Enter a value in any of the fields, and the tool will automatically convert the value to the corresponding units."
     }
 }

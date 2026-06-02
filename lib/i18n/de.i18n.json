@@ -207,5 +207,25 @@
       "enzybrew": "30 Min einweichen",
       "custom": "—"
     }
+  },
+  "unit_screen": {
+    "tabs": {
+      "volume": "Volumen",
+      "weight": "Gewicht",
+      "temperature": "Temperatur"
+    },
+    "sections": {
+      "metric": "Metrisch",
+      "us": "US",
+      "imperial": "Imperial"
+    },
+    "weight_units": {
+      "kilograms": "Kilogramm",
+      "grams": "Gramm",
+      "pounds": "Pfund",
+      "ounces": "Unzen",
+      "stones": "Stone"
+    },
+    "info": "Nutze dieses Tool, um zwischen verschiedenen Gewichtseinheiten umzurechnen. Gib einen Wert in ein beliebiges Feld ein, die anderen Werte werden automatisch berechnet."
   }
 }

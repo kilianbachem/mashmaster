@@ -10,11 +10,11 @@ Future<void> setLanguageFromPrefs() async {
     dev.log(
       "[App Startup] Found lang flag in SharedPreferences. Setting language to ${prefMap['lang']}.",
     );
-    LocaleSettings.setLocaleRaw(prefMap['lang']);
+    await LocaleSettings.setLocaleRaw(prefMap['lang']);
   } else {
     dev.log("[App Startup] No lang flag found. Using Device Locale.");
 
-    LocaleSettings.useDeviceLocale();
+    await LocaleSettings.useDeviceLocale();
   }
 }
 

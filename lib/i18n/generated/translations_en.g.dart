@@ -52,6 +52,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
   late final TranslationsHydrometerScreenEn hydrometer_screen = TranslationsHydrometerScreenEn.internal(_root);
   late final TranslationsCarbonationScreenEn carbonation_screen = TranslationsCarbonationScreenEn.internal(_root);
   late final TranslationsDosageScreenEn dosage_screen = TranslationsDosageScreenEn.internal(_root);
+  late final TranslationsUnitScreenEn unit_screen = TranslationsUnitScreenEn.internal(_root);
 }
 
 // Path: language
@@ -218,6 +219,20 @@ class TranslationsDosageScreenEn {
   late final TranslationsDosageScreenResultEn result = TranslationsDosageScreenResultEn.internal(_root);
   late final TranslationsDosageScreenRinseEn rinse = TranslationsDosageScreenRinseEn.internal(_root);
   late final TranslationsDosageScreenContactTimeEn contact_time = TranslationsDosageScreenContactTimeEn.internal(_root);
+}
+
+// Path: unit_screen
+class TranslationsUnitScreenEn {
+  TranslationsUnitScreenEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  late final TranslationsUnitScreenTabsEn tabs = TranslationsUnitScreenTabsEn.internal(_root);
+  late final TranslationsUnitScreenSectionsEn sections = TranslationsUnitScreenSectionsEn.internal(_root);
+  late final TranslationsUnitScreenWeightUnitsEn weight_units = TranslationsUnitScreenWeightUnitsEn.internal(_root);
+  String get info =>
+      'Use this tool to easily convert between various weight units. Enter a value in any of the fields, and the tool will automatically convert the value to the corresponding units.';
 }
 
 // Path: home_screen_cards.dosage_calc
@@ -571,6 +586,44 @@ class TranslationsDosageScreenContactTimeEn {
   String get custom => '—';
 }
 
+// Path: unit_screen.tabs
+class TranslationsUnitScreenTabsEn {
+  TranslationsUnitScreenTabsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get volume => 'Volume';
+  String get weight => 'Weight';
+  String get temperature => 'Temperature';
+}
+
+// Path: unit_screen.sections
+class TranslationsUnitScreenSectionsEn {
+  TranslationsUnitScreenSectionsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get metric => 'Metric';
+  String get us => 'US';
+  String get imperial => 'Imperial';
+}
+
+// Path: unit_screen.weight_units
+class TranslationsUnitScreenWeightUnitsEn {
+  TranslationsUnitScreenWeightUnitsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get kilograms => 'Kilograms';
+  String get grams => 'Grams';
+  String get pounds => 'Pounds';
+  String get ounces => 'Ounces';
+  String get stones => 'Stones';
+}
+
 // Path: settings_screen.delete_app_data.alert_dialog
 class TranslationsSettingsScreenDeleteAppDataAlertDialogEn {
   TranslationsSettingsScreenDeleteAppDataAlertDialogEn.internal(this._root);
@@ -847,6 +900,30 @@ extension on Translations {
         return '30 min soak';
       case 'dosage_screen.contact_time.custom':
         return '—';
+      case 'unit_screen.tabs.volume':
+        return 'Volume';
+      case 'unit_screen.tabs.weight':
+        return 'Weight';
+      case 'unit_screen.tabs.temperature':
+        return 'Temperature';
+      case 'unit_screen.sections.metric':
+        return 'Metric';
+      case 'unit_screen.sections.us':
+        return 'US';
+      case 'unit_screen.sections.imperial':
+        return 'Imperial';
+      case 'unit_screen.weight_units.kilograms':
+        return 'Kilograms';
+      case 'unit_screen.weight_units.grams':
+        return 'Grams';
+      case 'unit_screen.weight_units.pounds':
+        return 'Pounds';
+      case 'unit_screen.weight_units.ounces':
+        return 'Ounces';
+      case 'unit_screen.weight_units.stones':
+        return 'Stones';
+      case 'unit_screen.info':
+        return 'Use this tool to easily convert between various weight units. Enter a value in any of the fields, and the tool will automatically convert the value to the corresponding units.';
       default:
         return null;
     }
