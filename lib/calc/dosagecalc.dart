@@ -1,4 +1,4 @@
-enum DosageType { starSan, saniClean, pbw, chemiproOxi, custom }
+enum DosageType { starSan, saniClean, pbw, chemiproOxi, enzyBrew, custom }
 
 enum DosageUnit { milliliter, gram }
 
@@ -17,6 +17,7 @@ class DosageCalculation {
     DosageType.starSan: 1.5,
     DosageType.saniClean: 2.6,
     DosageType.chemiproOxi: 4.0,
+    DosageType.enzyBrew: 5.0,
   };
 
   static const Map<DosageType, DosageUnit> _units = {
@@ -24,6 +25,7 @@ class DosageCalculation {
     DosageType.saniClean: DosageUnit.milliliter,
     DosageType.pbw: DosageUnit.gram,
     DosageType.chemiproOxi: DosageUnit.gram,
+    DosageType.enzyBrew: DosageUnit.gram,
   };
 
   static const Map<DosageType, bool> _noRinse = {
@@ -31,6 +33,7 @@ class DosageCalculation {
     DosageType.saniClean: true,
     DosageType.pbw: false,
     DosageType.chemiproOxi: true,
+    DosageType.enzyBrew: false,
   };
 
   static const double _pbwColdSideRate = 6.0;

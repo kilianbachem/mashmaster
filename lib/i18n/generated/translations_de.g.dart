@@ -730,6 +730,8 @@ class _TranslationsDosageScreenContactTimeDe extends TranslationsDosageScreenCon
   @override
   String get chemipro_oxi => '2–5 Min';
   @override
+  String get enzybrew => '30 Min einweichen';
+  @override
   String get custom => '—';
 }
 
@@ -1009,6 +1011,8 @@ extension on TranslationsDe {
         return 'einweichen';
       case 'dosage_screen.contact_time.chemipro_oxi':
         return '2–5 Min';
+      case 'dosage_screen.contact_time.enzybrew':
+        return '30 Min einweichen';
       case 'dosage_screen.contact_time.custom':
         return '—';
       default:

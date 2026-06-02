@@ -567,6 +567,7 @@ class TranslationsDosageScreenContactTimeEn {
   String get saniclean => '2–3 min';
   String get pbw => 'soak';
   String get chemipro_oxi => '2–5 min';
+  String get enzybrew => '30 min soak';
   String get custom => '—';
 }
 
@@ -842,6 +843,8 @@ extension on Translations {
         return 'soak';
       case 'dosage_screen.contact_time.chemipro_oxi':
         return '2–5 min';
+      case 'dosage_screen.contact_time.enzybrew':
+        return '30 min soak';
       case 'dosage_screen.contact_time.custom':
         return '—';
       default:

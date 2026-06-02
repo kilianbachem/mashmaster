@@ -62,6 +62,8 @@ class _HomeScreenDosageCalcState extends State<HomeScreenDosageCalc> {
         return 'PBW';
       case DosageType.chemiproOxi:
         return 'ChemiPro Oxi';
+      case DosageType.enzyBrew:
+        return 'EnzyBrew';
       case DosageType.custom:
         return t.dosage_screen.products.custom;
     }
@@ -77,6 +79,8 @@ class _HomeScreenDosageCalcState extends State<HomeScreenDosageCalc> {
         return t.dosage_screen.contact_time.pbw;
       case DosageType.chemiproOxi:
         return t.dosage_screen.contact_time.chemipro_oxi;
+      case DosageType.enzyBrew:
+        return t.dosage_screen.contact_time.enzybrew;
       case DosageType.custom:
         return t.dosage_screen.contact_time.custom;
     }
