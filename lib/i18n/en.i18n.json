@@ -30,7 +30,7 @@
         },
         "general_calc": {
             "title": "General Calculations",
-            "subtitle": "ABV (%vol), Calories, Refractometer, Boil-Off Rate, Hydrometer Correction, Carbonation"
+            "subtitle": "ABV (%vol), Calories, Refractometer, Boil-Off Rate, Hydrometer Correction, Carbonation, Serving Pressure"
         },
         "brew_calc": {
             "title": "Brewing Conversions",
@@ -109,7 +109,8 @@
             "abv": "ABV",
             "refractometer": "Refractometer",
             "hydrometer": "Hydrometer",
-            "carbonation": "Carbonation"
+            "carbonation": "Carbonation",
+            "serving_pressure": "Serving Pressure"
         }
     },
     "refractometer_screen": {
@@ -172,6 +173,28 @@
             "current_co2": "Currently ${co2} g/L CO₂ in the beer"
         },
         "info": "Pick a method and beer style. For natural carbonation with sugar, the peak fermentation temperature matters — it determines how much CO₂ is already dissolved in the beer."
+    },
+    "serving_pressure_screen": {
+        "labels": {
+            "co2_level": "CO₂ Level",
+            "beer_temp": "Beer Temperature",
+            "line_length": "Line Length",
+            "line_diameter": "Line Diameter",
+            "height_difference": "Height Difference",
+            "serving_pressure": "Serving Pressure",
+            "saturation_pressure": "Saturation Pressure",
+            "line_loss": "Line Loss",
+            "height_loss": "Height Difference",
+            "safety_margin": "Safety Margin"
+        },
+        "hint": {
+            "co2": "e.g. 5.0",
+            "beer_temp": "e.g. 4",
+            "line_length": "e.g. 1.5",
+            "height_difference": "e.g. 0.5"
+        },
+        "height_hint": "positive = tap above keg",
+        "info": "Calculates the optimal serving pressure from saturation pressure, line resistance and height difference. Source: braumagazin.de"
     },
     "dosage_screen": {
         "section": {

@@ -62,6 +62,8 @@ class TranslationsDe extends Translations {
   @override
   late final _TranslationsCarbonationScreenDe carbonation_screen = _TranslationsCarbonationScreenDe._(_root);
   @override
+  late final _TranslationsServingPressureScreenDe serving_pressure_screen = _TranslationsServingPressureScreenDe._(_root);
+  @override
   late final _TranslationsDosageScreenDe dosage_screen = _TranslationsDosageScreenDe._(_root);
   @override
   late final _TranslationsUnitScreenDe unit_screen = _TranslationsUnitScreenDe._(_root);
@@ -264,6 +266,23 @@ class _TranslationsCarbonationScreenDe extends TranslationsCarbonationScreenEn {
       'Wähle Methode und Bierstil. Bei natürlicher Karbonisierung mit Zucker zählt die höchste Gärtemperatur — sie bestimmt, wie viel CO₂ schon im Bier gelöst ist.';
 }
 
+// Path: serving_pressure_screen
+class _TranslationsServingPressureScreenDe extends TranslationsServingPressureScreenEn {
+  _TranslationsServingPressureScreenDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  late final _TranslationsServingPressureScreenLabelsDe labels = _TranslationsServingPressureScreenLabelsDe._(_root);
+  @override
+  late final _TranslationsServingPressureScreenHintDe hint = _TranslationsServingPressureScreenHintDe._(_root);
+  @override
+  String get height_hint => 'positiv = Zapfhahn über Keg';
+  @override
+  String get info => 'Berechnet den optimalen Zapfdruck aus Sättigungsdruck, Leitungswiderstand und Höhendifferenz. Quelle: braumagazin.de';
+}
+
 // Path: dosage_screen
 class _TranslationsDosageScreenDe extends TranslationsDosageScreenEn {
   _TranslationsDosageScreenDe._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -335,7 +354,7 @@ class _TranslationsHomeScreenCardsGeneralCalcDe extends TranslationsHomeScreenCa
   @override
   String get title => 'Allgemeine Berechnungen';
   @override
-  String get subtitle => 'Alkoholgehalt, Kalorien, Refraktometrie, Boil-Off, Hydrometer-Korrektur, Karbonisierung';
+  String get subtitle => 'Alkoholgehalt, Kalorien, Refraktometrie, Boil-Off, Hydrometer-Korrektur, Karbonisierung, Zapfdruck';
 }
 
 // Path: home_screen_cards.brew_calc
@@ -514,6 +533,8 @@ class _TranslationsGeneralScreenTabsDe extends TranslationsGeneralScreenTabsEn {
   String get hydrometer => 'Hydrometer';
   @override
   String get carbonation => 'Karbonisierung';
+  @override
+  String get serving_pressure => 'Zapfdruck';
 }
 
 // Path: refractometer_screen.labels
@@ -659,6 +680,52 @@ class _TranslationsCarbonationScreenResultDe extends TranslationsCarbonationScre
       '${bar} bar bei ${temp} °C für ca. 1 Woche, um ${target} g/L CO₂ zu erreichen';
   @override
   String current_co2({required Object co2}) => 'Aktuell ${co2} g/L CO₂ im Bier';
+}
+
+// Path: serving_pressure_screen.labels
+class _TranslationsServingPressureScreenLabelsDe extends TranslationsServingPressureScreenLabelsEn {
+  _TranslationsServingPressureScreenLabelsDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get co2_level => 'CO₂-Gehalt';
+  @override
+  String get beer_temp => 'Biertemperatur';
+  @override
+  String get line_length => 'Leitungslänge';
+  @override
+  String get line_diameter => 'Leitungsdurchmesser';
+  @override
+  String get height_difference => 'Höhendifferenz';
+  @override
+  String get serving_pressure => 'Zapfdruck';
+  @override
+  String get saturation_pressure => 'Sättigungsdruck';
+  @override
+  String get line_loss => 'Leitungsverlust';
+  @override
+  String get height_loss => 'Höhendifferenz';
+  @override
+  String get safety_margin => 'Sicherheitszuschlag';
+}
+
+// Path: serving_pressure_screen.hint
+class _TranslationsServingPressureScreenHintDe extends TranslationsServingPressureScreenHintEn {
+  _TranslationsServingPressureScreenHintDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get co2 => 'z.B. 5,0';
+  @override
+  String get beer_temp => 'z.B. 4';
+  @override
+  String get line_length => 'z.B. 1,5';
+  @override
+  String get height_difference => 'z.B. 0,5';
 }
 
 // Path: dosage_screen.section
@@ -886,7 +953,7 @@ extension on TranslationsDe {
       case 'home_screen_cards.general_calc.title':
         return 'Allgemeine Berechnungen';
       case 'home_screen_cards.general_calc.subtitle':
-        return 'Alkoholgehalt, Kalorien, Refraktometrie, Boil-Off, Hydrometer-Korrektur, Karbonisierung';
+        return 'Alkoholgehalt, Kalorien, Refraktometrie, Boil-Off, Hydrometer-Korrektur, Karbonisierung, Zapfdruck';
       case 'home_screen_cards.brew_calc.title':
         return 'Brau-Umrechnungen';
       case 'home_screen_cards.brew_calc.subtitle':
@@ -985,6 +1052,8 @@ extension on TranslationsDe {
         return 'Hydrometer';
       case 'general_screen.tabs.carbonation':
         return 'Karbonisierung';
+      case 'general_screen.tabs.serving_pressure':
+        return 'Zapfdruck';
       case 'refractometer_screen.fermented_wort':
         return 'Vergorene Würze?';
       case 'refractometer_screen.labels.og':
@@ -1066,6 +1135,38 @@ extension on TranslationsDe {
         return ({required Object co2}) => 'Aktuell ${co2} g/L CO₂ im Bier';
       case 'carbonation_screen.info':
         return 'Wähle Methode und Bierstil. Bei natürlicher Karbonisierung mit Zucker zählt die höchste Gärtemperatur — sie bestimmt, wie viel CO₂ schon im Bier gelöst ist.';
+      case 'serving_pressure_screen.labels.co2_level':
+        return 'CO₂-Gehalt';
+      case 'serving_pressure_screen.labels.beer_temp':
+        return 'Biertemperatur';
+      case 'serving_pressure_screen.labels.line_length':
+        return 'Leitungslänge';
+      case 'serving_pressure_screen.labels.line_diameter':
+        return 'Leitungsdurchmesser';
+      case 'serving_pressure_screen.labels.height_difference':
+        return 'Höhendifferenz';
+      case 'serving_pressure_screen.labels.serving_pressure':
+        return 'Zapfdruck';
+      case 'serving_pressure_screen.labels.saturation_pressure':
+        return 'Sättigungsdruck';
+      case 'serving_pressure_screen.labels.line_loss':
+        return 'Leitungsverlust';
+      case 'serving_pressure_screen.labels.height_loss':
+        return 'Höhendifferenz';
+      case 'serving_pressure_screen.labels.safety_margin':
+        return 'Sicherheitszuschlag';
+      case 'serving_pressure_screen.hint.co2':
+        return 'z.B. 5,0';
+      case 'serving_pressure_screen.hint.beer_temp':
+        return 'z.B. 4';
+      case 'serving_pressure_screen.hint.line_length':
+        return 'z.B. 1,5';
+      case 'serving_pressure_screen.hint.height_difference':
+        return 'z.B. 0,5';
+      case 'serving_pressure_screen.height_hint':
+        return 'positiv = Zapfhahn über Keg';
+      case 'serving_pressure_screen.info':
+        return 'Berechnet den optimalen Zapfdruck aus Sättigungsdruck, Leitungswiderstand und Höhendifferenz. Quelle: braumagazin.de';
       case 'dosage_screen.section.product':
         return 'Produkt';
       case 'dosage_screen.section.application':

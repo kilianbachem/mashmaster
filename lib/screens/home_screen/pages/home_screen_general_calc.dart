@@ -4,6 +4,7 @@ import 'package:mashmaster/calc/carbonation_calc.dart';
 import 'package:mashmaster/calc/general_calc.dart';
 import 'package:mashmaster/calc/hydrometer_calc.dart';
 import 'package:mashmaster/calc/refractometer_calc.dart';
+import 'package:mashmaster/calc/serving_pressure_calc.dart';
 import 'package:mashmaster/data/beer_styles.dart';
 import 'package:mashmaster/i18n/generated/translations.g.dart';
 
@@ -16,7 +17,7 @@ class HomeScreenGeneralCalc extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Column(
         children: [
           Material(
@@ -29,6 +30,7 @@ class HomeScreenGeneralCalc extends StatelessWidget {
                 Tab(text: t.general_screen.tabs.refractometer),
                 Tab(text: t.general_screen.tabs.hydrometer),
                 Tab(text: t.general_screen.tabs.carbonation),
+                Tab(text: t.general_screen.tabs.serving_pressure),
               ],
             ),
           ),
@@ -39,6 +41,7 @@ class HomeScreenGeneralCalc extends StatelessWidget {
                 _RefractometerBody(),
                 _HydrometerBody(),
                 _CarbonationBody(),
+                _ServingPressureBody(),
               ],
             ),
           ),
@@ -546,6 +549,121 @@ class _CarbonationBodyState extends State<_CarbonationBody> {
 }
 
 // ---------------------------------------------------------------------------
+// Serving pressure (Zapfdruck) calculator
+// ---------------------------------------------------------------------------
+
+class _ServingPressureBody extends StatefulWidget {
+  const _ServingPressureBody();
+
+  @override
+  State<_ServingPressureBody> createState() => _ServingPressureBodyState();
+}
+
+class _ServingPressureBodyState extends State<_ServingPressureBody> {
+  LineDiameter _diameter = LineDiameter.mm7;
+  final TextEditingController _co2Ctrl = TextEditingController(text: '5,0');
+  final TextEditingController _tempCtrl = TextEditingController(text: '4');
+  final TextEditingController _lengthCtrl = TextEditingController(text: '1,5');
+  final TextEditingController _heightCtrl = TextEditingController(text: '0');
+
+  @override
+  void initState() {
+    super.initState();
+    _co2Ctrl.addListener(() => setState(() {}));
+    _tempCtrl.addListener(() => setState(() {}));
+    _lengthCtrl.addListener(() => setState(() {}));
+    _heightCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _co2Ctrl.dispose();
+    _tempCtrl.dispose();
+    _lengthCtrl.dispose();
+    _heightCtrl.dispose();
+    super.dispose();
+  }
+
+  ServingPressureResult? _compute() {
+    final co2 = _parse(_co2Ctrl.text);
+    final temp = _parse(_tempCtrl.text);
+    final length = _parse(_lengthCtrl.text);
+    final height = _parseAllowNegative(_heightCtrl.text);
+    if (co2 == null || temp == null || length == null || height == null) {
+      return null;
+    }
+    return ServingPressureCalculation.calculate(
+      co2GramsPerLiter: co2,
+      beerTempC: temp,
+      lineLengthM: length,
+      lineDiameter: _diameter,
+      heightDifferenceM: height,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context);
+    final result = _compute();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _NumberField(
+            controller: _co2Ctrl,
+            labelText: t.serving_pressure_screen.labels.co2_level,
+            hintText: t.serving_pressure_screen.hint.co2,
+            suffixText: 'g/L CO₂',
+          ),
+          const SizedBox(height: 12),
+          _NumberField(
+            controller: _tempCtrl,
+            labelText: t.serving_pressure_screen.labels.beer_temp,
+            hintText: t.serving_pressure_screen.hint.beer_temp,
+            suffixText: '°C',
+          ),
+          const SizedBox(height: 16),
+          _SectionLabel(text: t.serving_pressure_screen.labels.line_diameter),
+          const SizedBox(height: 8),
+          SegmentedButton<LineDiameter>(
+            showSelectedIcon: false,
+            segments: LineDiameter.values
+                .map((d) => ButtonSegment(
+                      value: d,
+                      label: Text(ServingPressureCalculation.diameterLabel(d)),
+                    ))
+                .toList(),
+            selected: {_diameter},
+            onSelectionChanged: (s) => setState(() => _diameter = s.first),
+          ),
+          const SizedBox(height: 16),
+          _NumberField(
+            controller: _lengthCtrl,
+            labelText: t.serving_pressure_screen.labels.line_length,
+            hintText: t.serving_pressure_screen.hint.line_length,
+            suffixText: 'm',
+          ),
+          const SizedBox(height: 12),
+          _NumberFieldAllowNegative(
+            controller: _heightCtrl,
+            labelText: t.serving_pressure_screen.labels.height_difference,
+            hintText: t.serving_pressure_screen.hint.height_difference,
+            suffixText: 'm',
+            helperText: t.serving_pressure_screen.height_hint,
+          ),
+          const SizedBox(height: 24),
+          _ServingPressureResultCard(result: result),
+          const SizedBox(height: 16),
+          _InfoFooter(text: t.serving_pressure_screen.info),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Result cards
 // ---------------------------------------------------------------------------
 
@@ -831,6 +949,63 @@ class _CarbonationResultCard extends StatelessWidget {
   }
 }
 
+class _ServingPressureResultCard extends StatelessWidget {
+  final ServingPressureResult? result;
+  const _ServingPressureResultCard({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final r = result;
+
+    return Card(
+      color: scheme.primaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              t.serving_pressure_screen.labels.serving_pressure,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
+                  ),
+            ),
+            const SizedBox(height: 4),
+            _BigNumber(
+              value: r == null ? '—' : r.totalPressureBar.toStringAsFixed(2),
+              unit: 'bar',
+            ),
+            if (r != null) ...[
+              const SizedBox(height: 20),
+              _StatRow(
+                label: t.serving_pressure_screen.labels.saturation_pressure,
+                value: '${r.saturationPressureBar.toStringAsFixed(2)} bar',
+              ),
+              const SizedBox(height: 8),
+              _StatRow(
+                label: t.serving_pressure_screen.labels.line_loss,
+                value: '${r.lineLossBar.toStringAsFixed(2)} bar',
+              ),
+              const SizedBox(height: 8),
+              _StatRow(
+                label: t.serving_pressure_screen.labels.height_loss,
+                value: '${r.heightLossBar.toStringAsFixed(2)} bar',
+              ),
+              const SizedBox(height: 8),
+              _StatRow(
+                label: t.serving_pressure_screen.labels.safety_margin,
+                value: '${r.safetyMarginBar.toStringAsFixed(2)} bar',
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Shared widgets
 // ---------------------------------------------------------------------------
@@ -904,6 +1079,39 @@ class _NumberField extends StatelessWidget {
         labelText: labelText,
         hintText: hintText,
         suffixText: suffixText,
+      ),
+    );
+  }
+}
+
+class _NumberFieldAllowNegative extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final String hintText;
+  final String? suffixText;
+  final String? helperText;
+  const _NumberFieldAllowNegative({
+    required this.controller,
+    required this.labelText,
+    required this.hintText,
+    this.suffixText,
+    this.helperText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9.,-]')),
+      ],
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(),
+        labelText: labelText,
+        hintText: hintText,
+        suffixText: suffixText,
+        helperText: helperText,
       ),
     );
   }
@@ -989,4 +1197,11 @@ double? _parse(String raw) {
   final v = double.tryParse(cleaned);
   if (v == null || v < 0) return null;
   return v;
+}
+
+/// Like [_parse] but allows negative values (needed for height difference).
+double? _parseAllowNegative(String raw) {
+  final cleaned = raw.replaceAll(',', '.').trim();
+  if (cleaned.isEmpty) return null;
+  return double.tryParse(cleaned);
 }

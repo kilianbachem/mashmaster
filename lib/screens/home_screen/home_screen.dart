@@ -14,13 +14,10 @@ class HomeScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: ListView(
         children:
-            homeScreenCardDetails.entries.map((entry) {
-              final key = entry.key;
-              final data = entry.value;
-
+            homeScreenCardDetails.map((data) {
               return ScreenCard(
-                title: t['home_screen_cards.$key.title'],
-                subtitle: t['home_screen_cards.$key.subtitle'],
+                title: data.getTitle(t),
+                subtitle: data.getSubtitle(t),
                 icon: data.icon,
                 color: data.color,
                 location: data.location,

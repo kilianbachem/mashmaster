@@ -30,7 +30,7 @@
     },
     "general_calc": {
       "title": "Allgemeine Berechnungen",
-      "subtitle": "Alkoholgehalt, Kalorien, Refraktometrie, Boil-Off, Hydrometer-Korrektur, Karbonisierung"
+      "subtitle": "Alkoholgehalt, Kalorien, Refraktometrie, Boil-Off, Hydrometer-Korrektur, Karbonisierung, Zapfdruck"
     },
     "brew_calc": {
       "title": "Brau-Umrechnungen",
@@ -109,7 +109,8 @@
       "abv": "Alkohol",
       "refractometer": "Refraktometer",
       "hydrometer": "Hydrometer",
-      "carbonation": "Karbonisierung"
+      "carbonation": "Karbonisierung",
+      "serving_pressure": "Zapfdruck"
     }
   },
   "refractometer_screen": {
@@ -172,6 +173,28 @@
       "current_co2": "Aktuell ${co2} g/L CO₂ im Bier"
     },
     "info": "Wähle Methode und Bierstil. Bei natürlicher Karbonisierung mit Zucker zählt die höchste Gärtemperatur — sie bestimmt, wie viel CO₂ schon im Bier gelöst ist."
+  },
+  "serving_pressure_screen": {
+    "labels": {
+      "co2_level": "CO₂-Gehalt",
+      "beer_temp": "Biertemperatur",
+      "line_length": "Leitungslänge",
+      "line_diameter": "Leitungsdurchmesser",
+      "height_difference": "Höhendifferenz",
+      "serving_pressure": "Zapfdruck",
+      "saturation_pressure": "Sättigungsdruck",
+      "line_loss": "Leitungsverlust",
+      "height_loss": "Höhendifferenz",
+      "safety_margin": "Sicherheitszuschlag"
+    },
+    "hint": {
+      "co2": "z.B. 5,0",
+      "beer_temp": "z.B. 4",
+      "line_length": "z.B. 1,5",
+      "height_difference": "z.B. 0,5"
+    },
+    "height_hint": "positiv = Zapfhahn über Keg",
+    "info": "Berechnet den optimalen Zapfdruck aus Sättigungsdruck, Leitungswiderstand und Höhendifferenz. Quelle: braumagazin.de"
   },
   "dosage_screen": {
     "section": {

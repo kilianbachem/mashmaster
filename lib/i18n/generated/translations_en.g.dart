@@ -51,6 +51,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
   late final TranslationsRefractometerScreenEn refractometer_screen = TranslationsRefractometerScreenEn.internal(_root);
   late final TranslationsHydrometerScreenEn hydrometer_screen = TranslationsHydrometerScreenEn.internal(_root);
   late final TranslationsCarbonationScreenEn carbonation_screen = TranslationsCarbonationScreenEn.internal(_root);
+  late final TranslationsServingPressureScreenEn serving_pressure_screen = TranslationsServingPressureScreenEn.internal(_root);
   late final TranslationsDosageScreenEn dosage_screen = TranslationsDosageScreenEn.internal(_root);
   late final TranslationsUnitScreenEn unit_screen = TranslationsUnitScreenEn.internal(_root);
 }
@@ -204,6 +205,20 @@ class TranslationsCarbonationScreenEn {
       'Pick a method and beer style. For natural carbonation with sugar, the peak fermentation temperature matters — it determines how much CO₂ is already dissolved in the beer.';
 }
 
+// Path: serving_pressure_screen
+class TranslationsServingPressureScreenEn {
+  TranslationsServingPressureScreenEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  late final TranslationsServingPressureScreenLabelsEn labels = TranslationsServingPressureScreenLabelsEn.internal(_root);
+  late final TranslationsServingPressureScreenHintEn hint = TranslationsServingPressureScreenHintEn.internal(_root);
+  String get height_hint => 'positive = tap above keg';
+  String get info =>
+      'Calculates the optimal serving pressure from saturation pressure, line resistance and height difference. Source: braumagazin.de';
+}
+
 // Path: dosage_screen
 class TranslationsDosageScreenEn {
   TranslationsDosageScreenEn.internal(this._root);
@@ -257,7 +272,7 @@ class TranslationsHomeScreenCardsGeneralCalcEn {
 
   // Translations
   String get title => 'General Calculations';
-  String get subtitle => 'ABV (%vol), Calories, Refractometer, Boil-Off Rate, Hydrometer Correction, Carbonation';
+  String get subtitle => 'ABV (%vol), Calories, Refractometer, Boil-Off Rate, Hydrometer Correction, Carbonation, Serving Pressure';
 }
 
 // Path: home_screen_cards.brew_calc
@@ -396,6 +411,7 @@ class TranslationsGeneralScreenTabsEn {
   String get refractometer => 'Refractometer';
   String get hydrometer => 'Hydrometer';
   String get carbonation => 'Carbonation';
+  String get serving_pressure => 'Serving Pressure';
 }
 
 // Path: refractometer_screen.labels
@@ -506,6 +522,38 @@ class TranslationsCarbonationScreenResultEn {
   String force_pressure({required Object bar, required Object temp, required Object target}) =>
       '${bar} bar at ${temp} °C for about 1 week to reach ${target} g/L CO₂';
   String current_co2({required Object co2}) => 'Currently ${co2} g/L CO₂ in the beer';
+}
+
+// Path: serving_pressure_screen.labels
+class TranslationsServingPressureScreenLabelsEn {
+  TranslationsServingPressureScreenLabelsEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get co2_level => 'CO₂ Level';
+  String get beer_temp => 'Beer Temperature';
+  String get line_length => 'Line Length';
+  String get line_diameter => 'Line Diameter';
+  String get height_difference => 'Height Difference';
+  String get serving_pressure => 'Serving Pressure';
+  String get saturation_pressure => 'Saturation Pressure';
+  String get line_loss => 'Line Loss';
+  String get height_loss => 'Height Difference';
+  String get safety_margin => 'Safety Margin';
+}
+
+// Path: serving_pressure_screen.hint
+class TranslationsServingPressureScreenHintEn {
+  TranslationsServingPressureScreenHintEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get co2 => 'e.g. 5.0';
+  String get beer_temp => 'e.g. 4';
+  String get line_length => 'e.g. 1.5';
+  String get height_difference => 'e.g. 0.5';
 }
 
 // Path: dosage_screen.section
@@ -697,7 +745,7 @@ extension on Translations {
       case 'home_screen_cards.general_calc.title':
         return 'General Calculations';
       case 'home_screen_cards.general_calc.subtitle':
-        return 'ABV (%vol), Calories, Refractometer, Boil-Off Rate, Hydrometer Correction, Carbonation';
+        return 'ABV (%vol), Calories, Refractometer, Boil-Off Rate, Hydrometer Correction, Carbonation, Serving Pressure';
       case 'home_screen_cards.brew_calc.title':
         return 'Brewing Conversions';
       case 'home_screen_cards.brew_calc.subtitle':
@@ -796,6 +844,8 @@ extension on Translations {
         return 'Hydrometer';
       case 'general_screen.tabs.carbonation':
         return 'Carbonation';
+      case 'general_screen.tabs.serving_pressure':
+        return 'Serving Pressure';
       case 'refractometer_screen.fermented_wort':
         return 'Fermented wort?';
       case 'refractometer_screen.labels.og':
@@ -877,6 +927,38 @@ extension on Translations {
         return ({required Object co2}) => 'Currently ${co2} g/L CO₂ in the beer';
       case 'carbonation_screen.info':
         return 'Pick a method and beer style. For natural carbonation with sugar, the peak fermentation temperature matters — it determines how much CO₂ is already dissolved in the beer.';
+      case 'serving_pressure_screen.labels.co2_level':
+        return 'CO₂ Level';
+      case 'serving_pressure_screen.labels.beer_temp':
+        return 'Beer Temperature';
+      case 'serving_pressure_screen.labels.line_length':
+        return 'Line Length';
+      case 'serving_pressure_screen.labels.line_diameter':
+        return 'Line Diameter';
+      case 'serving_pressure_screen.labels.height_difference':
+        return 'Height Difference';
+      case 'serving_pressure_screen.labels.serving_pressure':
+        return 'Serving Pressure';
+      case 'serving_pressure_screen.labels.saturation_pressure':
+        return 'Saturation Pressure';
+      case 'serving_pressure_screen.labels.line_loss':
+        return 'Line Loss';
+      case 'serving_pressure_screen.labels.height_loss':
+        return 'Height Difference';
+      case 'serving_pressure_screen.labels.safety_margin':
+        return 'Safety Margin';
+      case 'serving_pressure_screen.hint.co2':
+        return 'e.g. 5.0';
+      case 'serving_pressure_screen.hint.beer_temp':
+        return 'e.g. 4';
+      case 'serving_pressure_screen.hint.line_length':
+        return 'e.g. 1.5';
+      case 'serving_pressure_screen.hint.height_difference':
+        return 'e.g. 0.5';
+      case 'serving_pressure_screen.height_hint':
+        return 'positive = tap above keg';
+      case 'serving_pressure_screen.info':
+        return 'Calculates the optimal serving pressure from saturation pressure, line resistance and height difference. Source: braumagazin.de';
       case 'dosage_screen.section.product':
         return 'Product';
       case 'dosage_screen.section.application':
