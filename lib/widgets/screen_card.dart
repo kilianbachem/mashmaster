@@ -37,75 +37,75 @@ class ScreenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    // Derive a subtle gradient: the card's accent color at low opacity over the
+    // surface container so it works in both light and dark themes.
+    final accentSurface = Color.alphaBlend(
+      _color.withValues(alpha: 0.12),
+      scheme.surfaceContainerLow,
+    );
+    final accentSurfaceTop = Color.alphaBlend(
+      _color.withValues(alpha: 0.06),
+      scheme.surfaceContainerLowest,
+    );
+
     return Card(
-      color: Theme.of(context).colorScheme.tertiaryFixed,
       clipBehavior: Clip.antiAlias,
-      elevation: 3,
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
-        onTap:
-            _location != null
-                ? () {
-                  context.push(_location);
-                }
-                : () => _onTap,
-        child: SizedBox(
-          height: 200,
-          child: Column(
-            children: [
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                _color,
-                                Theme.of(context).colorScheme.tertiaryFixedDim,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          left: -constraints.maxHeight * 0.33,
-                          child: IconButton(
-                            onPressed: null,
-                            icon: Icon(_icon),
-                            color: Colors.grey[300],
-                            iconSize: constraints.maxHeight,
-                            padding: EdgeInsets.zero,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              Container(
-                height: 70,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: ListTile(
-                  minTileHeight: 0,
-                  title: Text(_title),
-                  subtitle: _subtitle != null ? Text(_subtitle) : null,
-                  contentPadding: EdgeInsets.only(left: 4),
-                  titleTextStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onTertiaryFixed,
+        onTap: _location != null
+            ? () => context.push(_location)
+            : () => _onTap?.call(),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [accentSurfaceTop, accentSurface],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          // AspectRatio makes the card square in the grid
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Icon badge
+                  Container(
+                    decoration: BoxDecoration(
+                      color: _color.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: Icon(_icon, color: _color, size: 26),
                   ),
-                  subtitleTextStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onTertiaryFixedVariant,
+                  const Spacer(),
+                  Text(
+                    _title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: scheme.onSurface,
+                        ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
+                  if (_subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      _subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

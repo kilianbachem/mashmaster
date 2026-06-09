@@ -9,20 +9,30 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context);
+    final cards = homeScreenCardDetails;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: ListView(
-        children:
-            homeScreenCardDetails.map((data) {
-              return ScreenCard(
-                title: data.getTitle(t),
-                subtitle: data.getSubtitle(t),
-                icon: data.icon,
-                color: data.color,
-                location: data.location,
-              );
-            }).toList(),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          // childAspectRatio is driven by AspectRatio(1) inside ScreenCard,
+          // so we set it to 1 here to match.
+          childAspectRatio: 1,
+        ),
+        itemCount: cards.length,
+        itemBuilder: (context, index) {
+          final data = cards[index];
+          return ScreenCard(
+            title: data.getTitle(t),
+            subtitle: data.getSubtitle(t),
+            icon: data.icon,
+            color: data.color,
+            location: data.location,
+          );
+        },
       ),
     );
   }
