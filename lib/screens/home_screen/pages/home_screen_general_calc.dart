@@ -20,11 +20,10 @@ class HomeScreenGeneralCalc extends StatelessWidget {
       length: 5,
       child: Column(
         children: [
+          // ── Tab bar with right-edge fade to hint scrollability ─────────
           Material(
             color: scheme.surface,
-            child: TabBar(
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
+            child: _FadingTabBar(
               tabs: [
                 Tab(text: t.general_screen.tabs.abv),
                 Tab(text: t.general_screen.tabs.refractometer),
@@ -51,9 +50,244 @@ class HomeScreenGeneralCalc extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// ABV / Calorie calculator (existing logic, extracted into its own widget)
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
+// Tab bar with a right-edge fade indicating scrollability
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _FadingTabBar extends StatelessWidget {
+  final List<Widget> tabs;
+  const _FadingTabBar({required this.tabs});
+
+  @override
+  Widget build(BuildContext context) {
+    final surfaceColor = Theme.of(context).colorScheme.surface;
+    return ShaderMask(
+      shaderCallback: (rect) => LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        stops: const [0.0, 0.75, 1.0],
+        colors: [
+          surfaceColor.withValues(alpha: 0.0),
+          surfaceColor.withValues(alpha: 0.0),
+          surfaceColor,
+        ],
+      ).createShader(rect),
+      blendMode: BlendMode.dstOut,
+      child: TabBar(
+        isScrollable: true,
+        tabAlignment: TabAlignment.start,
+        tabs: tabs,
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared form-grouping container (same pattern as dosage calculator)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _FormCard extends StatelessWidget {
+  final String? label;
+  final Widget child;
+
+  const _FormCard({this.label, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: scheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+      ),
+      padding: EdgeInsets.fromLTRB(16, label != null ? 12 : 16, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (label != null) ...[
+            _SectionLabel(text: label!),
+            const SizedBox(height: 12),
+          ],
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Stepper field: − | TextField | +
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _StepperField extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final String hintText;
+  final String? suffixText;
+  final double step;
+  final double min;
+  final bool allowNegative;
+  final String? helperText;
+
+  const _StepperField({
+    required this.controller,
+    required this.labelText,
+    required this.hintText,
+    this.suffixText,
+    this.step = 1.0,
+    this.min = 0.0,
+    this.allowNegative = false,
+    this.helperText,
+  });
+
+  double? _parse() {
+    final cleaned = controller.text.replaceAll(',', '.').trim();
+    if (cleaned.isEmpty || cleaned == '.' || cleaned == '-') return null;
+    return double.tryParse(cleaned);
+  }
+
+  String _format(double v) {
+    // Show enough decimals to represent the step cleanly
+    if (step < 0.01) return v.toStringAsFixed(3).replaceAll('.', ',');
+    if (step < 0.1) return v.toStringAsFixed(2).replaceAll('.', ',');
+    if (step < 1.0) return v.toStringAsFixed(1).replaceAll('.', ',');
+    return v.toStringAsFixed(0).replaceAll('.', ',');
+  }
+
+  void _step(double delta) {
+    final current = _parse() ?? 0.0;
+    final next = allowNegative
+        ? current + delta
+        : (current + delta).clamp(min, double.infinity);
+    controller.text = _format(next);
+    // Move cursor to end
+    controller.selection = TextSelection.collapsed(
+      offset: controller.text.length,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _StepButton(
+          icon: Icons.remove,
+          onPressed: () => _step(-step),
+          color: scheme.surfaceContainerHigh,
+          iconColor: scheme.onSurface,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: TextField(
+            controller: controller,
+            keyboardType: TextInputType.numberWithOptions(
+              decimal: true,
+              signed: allowNegative,
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                allowNegative ? RegExp(r'[0-9.,-]') : RegExp(r'[0-9.,]'),
+              ),
+            ],
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: labelText,
+              hintText: hintText,
+              suffixText: suffixText,
+              helperText: helperText,
+              isDense: true,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        _StepButton(
+          icon: Icons.add,
+          onPressed: () => _step(step),
+          color: scheme.surfaceContainerHigh,
+          iconColor: scheme.onSurface,
+        ),
+      ],
+    );
+  }
+}
+
+class _StepButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+  final Color color;
+  final Color iconColor;
+
+  const _StepButton({
+    required this.icon,
+    required this.onPressed,
+    required this.color,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Icon(icon, size: 20, color: iconColor),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Pinned result card shell
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Wraps any result content in the elevated, top-rounded pinned bar style.
+class _PinnedCard extends StatelessWidget {
+  final Widget child;
+  const _PinnedCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 12,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ABV / Calorie calculator
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _AbvCalcBody extends StatefulWidget {
   const _AbvCalcBody();
@@ -94,58 +328,81 @@ class _AbvCalcBodyState extends State<_AbvCalcBody> {
         ? t.general_screen.units.plato
         : t.general_screen.units.sg;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _SectionLabel(text: t.general_screen.section.input),
-          const SizedBox(height: 8),
-          SegmentedButton<GravityUnit>(
-            segments: [
-              ButtonSegment(
-                value: GravityUnit.plato,
-                label: Text(t.general_screen.units.plato),
-              ),
-              ButtonSegment(
-                value: GravityUnit.specificGravity,
-                label: Text(t.general_screen.units.sg),
-              ),
-            ],
-            selected: {_unit},
-            onSelectionChanged: (s) => setState(() => _unit = s.first),
+    // Step size depends on the unit
+    final step = _unit == GravityUnit.plato ? 0.1 : 0.001;
+
+    return Column(
+      children: [
+        // ── Scrollable inputs ──────────────────────────────────────────────
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Unit selector
+                _FormCard(
+                  label: t.general_screen.section.input,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SegmentedButton<GravityUnit>(
+                        segments: [
+                          ButtonSegment(
+                            value: GravityUnit.plato,
+                            label: Text(t.general_screen.units.plato),
+                          ),
+                          ButtonSegment(
+                            value: GravityUnit.specificGravity,
+                            label: Text(t.general_screen.units.sg),
+                          ),
+                        ],
+                        selected: {_unit},
+                        onSelectionChanged: (s) =>
+                            setState(() => _unit = s.first),
+                      ),
+                      const SizedBox(height: 16),
+                      _StepperField(
+                        controller: _ogCtrl,
+                        labelText: t.general_screen.labels.og,
+                        hintText: _unit == GravityUnit.plato
+                            ? t.general_screen.hint.og_plato
+                            : t.general_screen.hint.og_sg,
+                        suffixText: unitSuffix,
+                        step: step,
+                        min: 0,
+                      ),
+                      const SizedBox(height: 12),
+                      _StepperField(
+                        controller: _fgCtrl,
+                        labelText: t.general_screen.labels.fg,
+                        hintText: _unit == GravityUnit.plato
+                            ? t.general_screen.hint.fg_plato
+                            : t.general_screen.hint.fg_sg,
+                        suffixText: unitSuffix,
+                        step: step,
+                        min: 0,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _InfoFooter(text: t.general_screen.info),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-          _NumberField(
-            controller: _ogCtrl,
-            labelText: t.general_screen.labels.og,
-            hintText: _unit == GravityUnit.plato
-                ? t.general_screen.hint.og_plato
-                : t.general_screen.hint.og_sg,
-            suffixText: unitSuffix,
-          ),
-          const SizedBox(height: 12),
-          _NumberField(
-            controller: _fgCtrl,
-            labelText: t.general_screen.labels.fg,
-            hintText: _unit == GravityUnit.plato
-                ? t.general_screen.hint.fg_plato
-                : t.general_screen.hint.fg_sg,
-            suffixText: unitSuffix,
-          ),
-          const SizedBox(height: 24),
-          _AbvResultCard(stats: stats),
-          const SizedBox(height: 16),
-          _InfoFooter(text: t.general_screen.info),
-        ],
-      ),
+        ),
+        // ── Pinned result ──────────────────────────────────────────────────
+        _PinnedCard(child: _AbvResultCardContent(stats: stats)),
+      ],
     );
   }
 }
 
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
 // Refractometer calculator
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _RefractometerBody extends StatefulWidget {
   const _RefractometerBody();
@@ -202,51 +459,78 @@ class _RefractometerBodyState extends State<_RefractometerBody> {
     final t = Translations.of(context);
     final result = _compute();
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          CheckboxListTile(
-            value: _fermented,
-            onChanged: (v) => setState(() => _fermented = v ?? false),
-            title: Text(t.refractometer_screen.fermented_wort),
-            contentPadding: EdgeInsets.zero,
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          if (_fermented) ...[
-            _NumberField(
-              controller: _ogCtrl,
-              labelText: t.refractometer_screen.labels.og,
-              hintText: t.refractometer_screen.hint.og,
-              suffixText: '°P',
+    return Column(
+      children: [
+        // ── Scrollable inputs ──────────────────────────────────────────────
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _FormCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      CheckboxListTile(
+                        value: _fermented,
+                        onChanged: (v) =>
+                            setState(() => _fermented = v ?? false),
+                        title: Text(t.refractometer_screen.fermented_wort),
+                        contentPadding: EdgeInsets.zero,
+                        controlAffinity: ListTileControlAffinity.leading,
+                      ),
+                      if (_fermented) ...[
+                        const SizedBox(height: 8),
+                        _StepperField(
+                          controller: _ogCtrl,
+                          labelText: t.refractometer_screen.labels.og,
+                          hintText: t.refractometer_screen.hint.og,
+                          suffixText: '°P',
+                          step: 0.1,
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      _StepperField(
+                        controller: _brixCtrl,
+                        labelText: t.refractometer_screen.labels.brix,
+                        hintText: t.refractometer_screen.hint.brix,
+                        step: 0.1,
+                      ),
+                      const SizedBox(height: 12),
+                      _StepperField(
+                        controller: _cfCtrl,
+                        labelText:
+                            t.refractometer_screen.labels.correction_factor,
+                        hintText:
+                            t.refractometer_screen.hint.correction_factor,
+                        step: 0.01,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _InfoFooter(text: t.refractometer_screen.info),
+                const SizedBox(height: 8),
+              ],
             ),
-            const SizedBox(height: 12),
-          ],
-          _NumberField(
-            controller: _brixCtrl,
-            labelText: t.refractometer_screen.labels.brix,
-            hintText: t.refractometer_screen.hint.brix,
           ),
-          const SizedBox(height: 12),
-          _NumberField(
-            controller: _cfCtrl,
-            labelText: t.refractometer_screen.labels.correction_factor,
-            hintText: t.refractometer_screen.hint.correction_factor,
+        ),
+        // ── Pinned result ──────────────────────────────────────────────────
+        _PinnedCard(
+          child: _RefractometerResultContent(
+            result: result,
+            fermented: _fermented,
           ),
-          const SizedBox(height: 24),
-          _RefractometerResultCard(result: result, fermented: _fermented),
-          const SizedBox(height: 16),
-          _InfoFooter(text: t.refractometer_screen.info),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
 // Hydrometer temperature correction
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _HydrometerBody extends StatefulWidget {
   const _HydrometerBody();
@@ -302,61 +586,83 @@ class _HydrometerBodyState extends State<_HydrometerBody> {
     final measuredHint = _unit == GravityUnit.plato
         ? t.hydrometer_screen.hint.measured_plato
         : t.hydrometer_screen.hint.measured_sg;
+    final gravityStep = _unit == GravityUnit.plato ? 0.1 : 0.001;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SegmentedButton<GravityUnit>(
-            showSelectedIcon: false,
-            segments: [
-              ButtonSegment(
-                value: GravityUnit.plato,
-                label: Text(t.general_screen.units.plato),
-              ),
-              ButtonSegment(
-                value: GravityUnit.specificGravity,
-                label: Text(t.general_screen.units.sg),
-              ),
-            ],
-            selected: {_unit},
-            onSelectionChanged: (s) => setState(() => _unit = s.first),
+    return Column(
+      children: [
+        // ── Scrollable inputs ──────────────────────────────────────────────
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _FormCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SegmentedButton<GravityUnit>(
+                        showSelectedIcon: false,
+                        segments: [
+                          ButtonSegment(
+                            value: GravityUnit.plato,
+                            label: Text(t.general_screen.units.plato),
+                          ),
+                          ButtonSegment(
+                            value: GravityUnit.specificGravity,
+                            label: Text(t.general_screen.units.sg),
+                          ),
+                        ],
+                        selected: {_unit},
+                        onSelectionChanged: (s) =>
+                            setState(() => _unit = s.first),
+                      ),
+                      const SizedBox(height: 16),
+                      _StepperField(
+                        controller: _measuredCtrl,
+                        labelText: t.hydrometer_screen.labels.measured_gravity,
+                        hintText: measuredHint,
+                        suffixText: unitSuffix,
+                        step: gravityStep,
+                      ),
+                      const SizedBox(height: 12),
+                      _StepperField(
+                        controller: _wortTempCtrl,
+                        labelText: t.hydrometer_screen.labels.temperature,
+                        hintText: t.hydrometer_screen.hint.temperature,
+                        suffixText: '°C',
+                        step: 1,
+                      ),
+                      const SizedBox(height: 12),
+                      _StepperField(
+                        controller: _calibrationTempCtrl,
+                        labelText: t.hydrometer_screen.labels.calibration_temp,
+                        hintText: t.hydrometer_screen.hint.calibration_temp,
+                        suffixText: '°C',
+                        step: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _InfoFooter(text: t.hydrometer_screen.info),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-          _NumberField(
-            controller: _measuredCtrl,
-            labelText: t.hydrometer_screen.labels.measured_gravity,
-            hintText: measuredHint,
-            suffixText: unitSuffix,
-          ),
-          const SizedBox(height: 12),
-          _NumberField(
-            controller: _wortTempCtrl,
-            labelText: t.hydrometer_screen.labels.temperature,
-            hintText: t.hydrometer_screen.hint.temperature,
-            suffixText: '°C',
-          ),
-          const SizedBox(height: 12),
-          _NumberField(
-            controller: _calibrationTempCtrl,
-            labelText: t.hydrometer_screen.labels.calibration_temp,
-            hintText: t.hydrometer_screen.hint.calibration_temp,
-            suffixText: '°C',
-          ),
-          const SizedBox(height: 24),
-          _HydrometerResultCard(corrected: corrected, unit: _unit),
-          const SizedBox(height: 16),
-          _InfoFooter(text: t.hydrometer_screen.info),
-        ],
-      ),
+        ),
+        // ── Pinned result ──────────────────────────────────────────────────
+        _PinnedCard(
+          child: _HydrometerResultContent(corrected: corrected, unit: _unit),
+        ),
+      ],
     );
   }
 }
 
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
 // Carbonation calculator
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _CarbonationBody extends StatefulWidget {
   const _CarbonationBody();
@@ -370,9 +676,12 @@ class _CarbonationBodyState extends State<_CarbonationBody> {
   CarbonationMethod _method = CarbonationMethod.bottleSugar;
 
   late final TextEditingController _targetCo2Ctrl;
-  final TextEditingController _volumeCtrl = TextEditingController(text: '20');
-  final TextEditingController _fermTempCtrl = TextEditingController(text: '20');
-  final TextEditingController _carbTempCtrl = TextEditingController(text: '4');
+  final TextEditingController _volumeCtrl =
+      TextEditingController(text: '20');
+  final TextEditingController _fermTempCtrl =
+      TextEditingController(text: '20');
+  final TextEditingController _carbTempCtrl =
+      TextEditingController(text: '4');
 
   @override
   void initState() {
@@ -449,89 +758,135 @@ class _CarbonationBodyState extends State<_CarbonationBody> {
         ? t.carbonation_screen.labels.bottling_volume
         : t.carbonation_screen.labels.keg_volume;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DropdownMenu<BeerStyle>(
-            initialSelection: _style,
-            label: Text(t.carbonation_screen.labels.beer_style),
-            expandedInsets: EdgeInsets.zero,
-            onSelected: _onStyleSelected,
-            dropdownMenuEntries: beerStyles
-                .map((s) => DropdownMenuEntry<BeerStyle>(
-                      value: s,
-                      label: s.name,
-                    ))
-                .toList(),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Text(
-              '${t.carbonation_screen.labels.style_range}: '
-              '${_formatGpl(_style.minCo2GramsPerLiter)} – '
-              '${_formatGpl(_style.maxCo2GramsPerLiter)} g/L',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return Column(
+      children: [
+        // ── Scrollable inputs ──────────────────────────────────────────────
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Block 1: Beer style + target CO₂
+                _FormCard(
+                  label: t.carbonation_screen.labels.beer_style,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      DropdownMenu<BeerStyle>(
+                        initialSelection: _style,
+                        label: Text(t.carbonation_screen.labels.beer_style),
+                        expandedInsets: EdgeInsets.zero,
+                        onSelected: _onStyleSelected,
+                        dropdownMenuEntries: beerStyles
+                            .map((s) => DropdownMenuEntry<BeerStyle>(
+                                  value: s,
+                                  label: s.name,
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 6),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Text(
+                          '${t.carbonation_screen.labels.style_range}: '
+                          '${_formatGpl(_style.minCo2GramsPerLiter)} – '
+                          '${_formatGpl(_style.maxCo2GramsPerLiter)} g/L',
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _StepperField(
+                        controller: _targetCo2Ctrl,
+                        labelText: t.carbonation_screen.labels.target_co2,
+                        hintText: _formatGpl(_style.minCo2GramsPerLiter),
+                        suffixText: 'g/L CO₂',
+                        step: 0.1,
+                      ),
+                    ],
                   ),
+                ),
+                const SizedBox(height: 12),
+                // Block 2: Method
+                _FormCard(
+                  label: t.carbonation_screen.labels.method,
+                  child: SegmentedButton<CarbonationMethod>(
+                    showSelectedIcon: false,
+                    segments: [
+                      ButtonSegment(
+                        value: CarbonationMethod.bottleSugar,
+                        label: Text(
+                            t.carbonation_screen.methods.bottle_sugar),
+                      ),
+                      ButtonSegment(
+                        value: CarbonationMethod.kegSugar,
+                        label:
+                            Text(t.carbonation_screen.methods.keg_sugar),
+                      ),
+                      ButtonSegment(
+                        value: CarbonationMethod.kegForce,
+                        label:
+                            Text(t.carbonation_screen.methods.keg_force),
+                      ),
+                    ],
+                    selected: {_method},
+                    onSelectionChanged: (s) =>
+                        setState(() => _method = s.first),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Block 3: Method-specific inputs
+                if (isSugar)
+                  _FormCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _StepperField(
+                          controller: _volumeCtrl,
+                          labelText: volumeLabel,
+                          hintText: t.carbonation_screen.hint.volume,
+                          suffixText: 'L',
+                          step: 1,
+                        ),
+                        const SizedBox(height: 12),
+                        _StepperField(
+                          controller: _fermTempCtrl,
+                          labelText: t.carbonation_screen.labels
+                              .peak_fermentation_temp,
+                          hintText:
+                              t.carbonation_screen.hint.fermentation_temp,
+                          suffixText: '°C',
+                          step: 1,
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  _FormCard(
+                    child: _StepperField(
+                      controller: _carbTempCtrl,
+                      labelText:
+                          t.carbonation_screen.labels.carbonation_temp,
+                      hintText: t.carbonation_screen.hint.carbonation_temp,
+                      suffixText: '°C',
+                      step: 1,
+                    ),
+                  ),
+                const SizedBox(height: 12),
+                _InfoFooter(text: t.carbonation_screen.info),
+                const SizedBox(height: 8),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          _NumberField(
-            controller: _targetCo2Ctrl,
-            labelText: t.carbonation_screen.labels.target_co2,
-            hintText: _formatGpl(_style.minCo2GramsPerLiter),
-            suffixText: 'g/L CO₂',
-          ),
-          const SizedBox(height: 16),
-          _SectionLabel(text: t.carbonation_screen.labels.method),
-          const SizedBox(height: 8),
-          SegmentedButton<CarbonationMethod>(
-            showSelectedIcon: false,
-            segments: [
-              ButtonSegment(
-                value: CarbonationMethod.bottleSugar,
-                label: Text(t.carbonation_screen.methods.bottle_sugar),
-              ),
-              ButtonSegment(
-                value: CarbonationMethod.kegSugar,
-                label: Text(t.carbonation_screen.methods.keg_sugar),
-              ),
-              ButtonSegment(
-                value: CarbonationMethod.kegForce,
-                label: Text(t.carbonation_screen.methods.keg_force),
-              ),
-            ],
-            selected: {_method},
-            onSelectionChanged: (s) => setState(() => _method = s.first),
-          ),
-          const SizedBox(height: 16),
-          if (isSugar) ...[
-            _NumberField(
-              controller: _volumeCtrl,
-              labelText: volumeLabel,
-              hintText: t.carbonation_screen.hint.volume,
-              suffixText: 'L',
-            ),
-            const SizedBox(height: 12),
-            _NumberField(
-              controller: _fermTempCtrl,
-              labelText: t.carbonation_screen.labels.peak_fermentation_temp,
-              hintText: t.carbonation_screen.hint.fermentation_temp,
-              suffixText: '°C',
-            ),
-          ] else ...[
-            _NumberField(
-              controller: _carbTempCtrl,
-              labelText: t.carbonation_screen.labels.carbonation_temp,
-              hintText: t.carbonation_screen.hint.carbonation_temp,
-              suffixText: '°C',
-            ),
-          ],
-          const SizedBox(height: 24),
-          _CarbonationResultCard(
+        ),
+        // ── Pinned result ──────────────────────────────────────────────────
+        _PinnedCard(
+          child: _CarbonationResultContent(
             method: _method,
             target: target,
             volume: volume,
@@ -540,17 +895,15 @@ class _CarbonationBodyState extends State<_CarbonationBody> {
             sugarResult: sugarResult,
             pressureResult: pressureResult,
           ),
-          const SizedBox(height: 16),
-          _InfoFooter(text: t.carbonation_screen.info),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
 // Serving pressure (Zapfdruck) calculator
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _ServingPressureBody extends StatefulWidget {
   const _ServingPressureBody();
@@ -561,10 +914,14 @@ class _ServingPressureBody extends StatefulWidget {
 
 class _ServingPressureBodyState extends State<_ServingPressureBody> {
   LineDiameter _diameter = LineDiameter.mm7;
-  final TextEditingController _co2Ctrl = TextEditingController(text: '5,0');
-  final TextEditingController _tempCtrl = TextEditingController(text: '4');
-  final TextEditingController _lengthCtrl = TextEditingController(text: '1,5');
-  final TextEditingController _heightCtrl = TextEditingController(text: '0');
+  final TextEditingController _co2Ctrl =
+      TextEditingController(text: '5,0');
+  final TextEditingController _tempCtrl =
+      TextEditingController(text: '4');
+  final TextEditingController _lengthCtrl =
+      TextEditingController(text: '1,5');
+  final TextEditingController _heightCtrl =
+      TextEditingController(text: '0');
 
   @override
   void initState() {
@@ -606,70 +963,110 @@ class _ServingPressureBodyState extends State<_ServingPressureBody> {
     final t = Translations.of(context);
     final result = _compute();
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _NumberField(
-            controller: _co2Ctrl,
-            labelText: t.serving_pressure_screen.labels.co2_level,
-            hintText: t.serving_pressure_screen.hint.co2,
-            suffixText: 'g/L CO₂',
+    return Column(
+      children: [
+        // ── Scrollable inputs ──────────────────────────────────────────────
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Block 1: Beer conditions
+                _FormCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _StepperField(
+                        controller: _co2Ctrl,
+                        labelText:
+                            t.serving_pressure_screen.labels.co2_level,
+                        hintText: t.serving_pressure_screen.hint.co2,
+                        suffixText: 'g/L CO₂',
+                        step: 0.1,
+                      ),
+                      const SizedBox(height: 12),
+                      _StepperField(
+                        controller: _tempCtrl,
+                        labelText:
+                            t.serving_pressure_screen.labels.beer_temp,
+                        hintText: t.serving_pressure_screen.hint.beer_temp,
+                        suffixText: '°C',
+                        step: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Block 2: Line setup
+                _FormCard(
+                  label: t.serving_pressure_screen.labels.line_diameter,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SegmentedButton<LineDiameter>(
+                        showSelectedIcon: false,
+                        segments: LineDiameter.values
+                            .map((d) => ButtonSegment(
+                                  value: d,
+                                  label: Text(
+                                      ServingPressureCalculation.diameterLabel(
+                                          d)),
+                                ))
+                            .toList(),
+                        selected: {_diameter},
+                        onSelectionChanged: (s) =>
+                            setState(() => _diameter = s.first),
+                      ),
+                      const SizedBox(height: 16),
+                      _StepperField(
+                        controller: _lengthCtrl,
+                        labelText:
+                            t.serving_pressure_screen.labels.line_length,
+                        hintText:
+                            t.serving_pressure_screen.hint.line_length,
+                        suffixText: 'm',
+                        step: 0.5,
+                      ),
+                      const SizedBox(height: 12),
+                      _StepperField(
+                        controller: _heightCtrl,
+                        labelText:
+                            t.serving_pressure_screen.labels.height_difference,
+                        hintText:
+                            t.serving_pressure_screen.hint.height_difference,
+                        suffixText: 'm',
+                        step: 0.1,
+                        allowNegative: true,
+                        helperText:
+                            t.serving_pressure_screen.height_hint,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _InfoFooter(text: t.serving_pressure_screen.info),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          _NumberField(
-            controller: _tempCtrl,
-            labelText: t.serving_pressure_screen.labels.beer_temp,
-            hintText: t.serving_pressure_screen.hint.beer_temp,
-            suffixText: '°C',
-          ),
-          const SizedBox(height: 16),
-          _SectionLabel(text: t.serving_pressure_screen.labels.line_diameter),
-          const SizedBox(height: 8),
-          SegmentedButton<LineDiameter>(
-            showSelectedIcon: false,
-            segments: LineDiameter.values
-                .map((d) => ButtonSegment(
-                      value: d,
-                      label: Text(ServingPressureCalculation.diameterLabel(d)),
-                    ))
-                .toList(),
-            selected: {_diameter},
-            onSelectionChanged: (s) => setState(() => _diameter = s.first),
-          ),
-          const SizedBox(height: 16),
-          _NumberField(
-            controller: _lengthCtrl,
-            labelText: t.serving_pressure_screen.labels.line_length,
-            hintText: t.serving_pressure_screen.hint.line_length,
-            suffixText: 'm',
-          ),
-          const SizedBox(height: 12),
-          _NumberFieldAllowNegative(
-            controller: _heightCtrl,
-            labelText: t.serving_pressure_screen.labels.height_difference,
-            hintText: t.serving_pressure_screen.hint.height_difference,
-            suffixText: 'm',
-            helperText: t.serving_pressure_screen.height_hint,
-          ),
-          const SizedBox(height: 24),
-          _ServingPressureResultCard(result: result),
-          const SizedBox(height: 16),
-          _InfoFooter(text: t.serving_pressure_screen.info),
-        ],
-      ),
+        ),
+        // ── Pinned result ──────────────────────────────────────────────────
+        _PinnedCard(
+          child: _ServingPressureResultContent(result: result),
+        ),
+      ],
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// Result cards
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
+// Result card contents (inline, styled for the pinned card background)
+// ─────────────────────────────────────────────────────────────────────────────
 
-class _AbvResultCard extends StatelessWidget {
+class _AbvResultCardContent extends StatelessWidget {
   final BrewStats? stats;
-  const _AbvResultCard({required this.stats});
+  const _AbvResultCardContent({required this.stats});
 
   @override
   Widget build(BuildContext context) {
@@ -677,85 +1074,75 @@ class _AbvResultCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final s = stats;
 
-    return Card(
-      color: scheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              t.general_screen.labels.abv,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
-                  ),
-            ),
-            const SizedBox(height: 4),
-            _BigNumber(
-              value: s == null ? '—' : _fmtPercent(s.abv),
-              unit: '%',
-            ),
-            const SizedBox(height: 20),
-            _StatRow(
-              label: t.general_screen.labels.abw,
-              value: s == null ? '—' : '${_fmtPercent(s.abw)} %',
-            ),
-            const SizedBox(height: 16),
-            _StatRow(
-              label: t.general_screen.labels.calories,
-              value: s == null
-                  ? '—'
-                  : '${_fmtNumber(s.kcalPer100ml, 1)} kcal · ${_fmtNumber(s.kjPer100ml, 1)} kJ',
-              suffix: t.general_screen.per_100ml,
-            ),
-            const SizedBox(height: 8),
-            _StatRow(
-              label: t.general_screen.labels.carbs,
-              value: s == null ? '—' : '${_fmtNumber(s.carbsPer100ml, 1)} g',
-              suffix: t.general_screen.per_100ml,
-            ),
-            const SizedBox(height: 16),
-            _StatRow(
-              label: t.general_screen.labels.apparent_attenuation,
-              value: s == null ? '—' : '${_fmtPercent(s.apparentAttenuation)} %',
-            ),
-            const SizedBox(height: 8),
-            _StatRow(
-              label: t.general_screen.labels.real_attenuation,
-              value: s == null ? '—' : '${_fmtPercent(s.realAttenuation)} %',
-            ),
-            const SizedBox(height: 16),
-            _StatRow(
-              label: t.general_screen.labels.original_extract,
-              value: s == null
-                  ? '—'
-                  : '${_fmtNumber(s.originalExtractPlato, 2)} °P',
-            ),
-            const SizedBox(height: 8),
-            _StatRow(
-              label: t.general_screen.labels.apparent_extract,
-              value: s == null
-                  ? '—'
-                  : '${_fmtNumber(s.apparentExtractPlato, 2)} °P',
-            ),
-            const SizedBox(height: 8),
-            _StatRow(
-              label: t.general_screen.labels.real_extract,
-              value: s == null
-                  ? '—'
-                  : '${_fmtNumber(s.realExtractPlato, 2)} °P',
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          t.general_screen.labels.abv,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: scheme.onPrimaryContainer.withValues(alpha: 0.65),
+              ),
         ),
-      ),
+        const SizedBox(height: 2),
+        _BigNumber(
+          value: s == null ? '—' : _fmtPercent(s.abv),
+          unit: '%',
+        ),
+        if (s != null) ...[
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 20,
+            runSpacing: 6,
+            children: [
+              _StatRow(
+                label: t.general_screen.labels.abw,
+                value: '${_fmtPercent(s.abw)} %',
+              ),
+              _StatRow(
+                label: t.general_screen.labels.calories,
+                value:
+                    '${_fmtNumber(s.kcalPer100ml, 1)} kcal · ${_fmtNumber(s.kjPer100ml, 1)} kJ',
+                suffix: t.general_screen.per_100ml,
+              ),
+              _StatRow(
+                label: t.general_screen.labels.carbs,
+                value: '${_fmtNumber(s.carbsPer100ml, 1)} g',
+                suffix: t.general_screen.per_100ml,
+              ),
+              _StatRow(
+                label: t.general_screen.labels.apparent_attenuation,
+                value: '${_fmtPercent(s.apparentAttenuation)} %',
+              ),
+              _StatRow(
+                label: t.general_screen.labels.real_attenuation,
+                value: '${_fmtPercent(s.realAttenuation)} %',
+              ),
+              _StatRow(
+                label: t.general_screen.labels.original_extract,
+                value: '${_fmtNumber(s.originalExtractPlato, 2)} °P',
+              ),
+              _StatRow(
+                label: t.general_screen.labels.apparent_extract,
+                value: '${_fmtNumber(s.apparentExtractPlato, 2)} °P',
+              ),
+              _StatRow(
+                label: t.general_screen.labels.real_extract,
+                value: '${_fmtNumber(s.realExtractPlato, 2)} °P',
+              ),
+            ],
+          ),
+        ],
+      ],
     );
   }
 }
 
-class _RefractometerResultCard extends StatelessWidget {
+class _RefractometerResultContent extends StatelessWidget {
   final RefractometerResult? result;
   final bool fermented;
-  const _RefractometerResultCard({required this.result, required this.fermented});
+  const _RefractometerResultContent(
+      {required this.result, required this.fermented});
 
   @override
   Widget build(BuildContext context) {
@@ -763,45 +1150,42 @@ class _RefractometerResultCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final r = result;
 
-    return Card(
-      color: scheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              t.refractometer_screen.labels.gravity,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
-                  ),
-            ),
-            const SizedBox(height: 4),
-            _BigNumber(
-              value: r == null ? '—' : _fmtNumber(r.gravityPlato, 1),
-              unit: '°P',
-            ),
-            if (fermented && r != null && r.abv != null) ...[
-              const SizedBox(height: 16),
-              Text(
-                '${t.refractometer_screen.labels.abv} ${_fmtPercent(r.abv!)}% · '
-                '${t.refractometer_screen.labels.abw} ${_fmtPercent(r.abw!)}%',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: scheme.onPrimaryContainer.withValues(alpha: 0.75),
-                    ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          t.refractometer_screen.labels.gravity,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: scheme.onPrimaryContainer.withValues(alpha: 0.65),
               ),
-            ],
-          ],
         ),
-      ),
+        const SizedBox(height: 2),
+        _BigNumber(
+          value: r == null ? '—' : _fmtNumber(r.gravityPlato, 1),
+          unit: '°P',
+        ),
+        if (fermented && r != null && r.abv != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            '${t.refractometer_screen.labels.abv} ${_fmtPercent(r.abv!)}% · '
+            '${t.refractometer_screen.labels.abw} ${_fmtPercent(r.abw!)}%',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color:
+                      scheme.onPrimaryContainer.withValues(alpha: 0.75),
+                ),
+          ),
+        ],
+      ],
     );
   }
 }
 
-class _HydrometerResultCard extends StatelessWidget {
+class _HydrometerResultContent extends StatelessWidget {
   final double? corrected;
   final GravityUnit unit;
-  const _HydrometerResultCard({required this.corrected, required this.unit});
+  const _HydrometerResultContent(
+      {required this.corrected, required this.unit});
 
   @override
   Widget build(BuildContext context) {
@@ -817,29 +1201,24 @@ class _HydrometerResultCard extends StatelessWidget {
             ? _fmtNumber(corrected!, 1)
             : corrected!.toStringAsFixed(3));
 
-    return Card(
-      color: scheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              t.hydrometer_screen.labels.corrected_gravity,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
-                  ),
-            ),
-            const SizedBox(height: 4),
-            _BigNumber(value: value, unit: unitLabel),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          t.hydrometer_screen.labels.corrected_gravity,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: scheme.onPrimaryContainer.withValues(alpha: 0.65),
+              ),
         ),
-      ),
+        const SizedBox(height: 2),
+        _BigNumber(value: value, unit: unitLabel),
+      ],
     );
   }
 }
 
-class _CarbonationResultCard extends StatelessWidget {
+class _CarbonationResultContent extends StatelessWidget {
   final CarbonationMethod method;
   final double? target;
   final double? volume;
@@ -848,7 +1227,7 @@ class _CarbonationResultCard extends StatelessWidget {
   final CarbonationSugarResult? sugarResult;
   final CarbonationPressureResult? pressureResult;
 
-  const _CarbonationResultCard({
+  const _CarbonationResultContent({
     required this.method,
     required this.target,
     required this.volume,
@@ -867,11 +1246,15 @@ class _CarbonationResultCard extends StatelessWidget {
     Widget body;
     switch (method) {
       case CarbonationMethod.bottleSugar:
-        if (sugarResult == null || target == null || volume == null || fermTemp == null) {
+        if (sugarResult == null ||
+            target == null ||
+            volume == null ||
+            fermTemp == null) {
           body = Text('—', style: TextStyle(color: fg, fontSize: 18));
         } else {
           body = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 t.carbonation_screen.result.sugar_bottle(
@@ -880,12 +1263,14 @@ class _CarbonationResultCard extends StatelessWidget {
                   temp: _fmtNumber(fermTemp!, 1),
                   target: _fmtNumber(target!, 1),
                 ),
-                style: TextStyle(color: fg, fontSize: 16, height: 1.4),
+                style:
+                    TextStyle(color: fg, fontSize: 15, height: 1.4),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Text(
                 t.carbonation_screen.result.current_co2(
-                  co2: _fmtNumber(sugarResult!.residualCo2GramsPerLiter, 1),
+                  co2: _fmtNumber(
+                      sugarResult!.residualCo2GramsPerLiter, 1),
                 ),
                 style: TextStyle(
                   color: fg.withValues(alpha: 0.7),
@@ -896,11 +1281,15 @@ class _CarbonationResultCard extends StatelessWidget {
           );
         }
       case CarbonationMethod.kegSugar:
-        if (sugarResult == null || target == null || volume == null || fermTemp == null) {
+        if (sugarResult == null ||
+            target == null ||
+            volume == null ||
+            fermTemp == null) {
           body = Text('—', style: TextStyle(color: fg, fontSize: 18));
         } else {
           body = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 t.carbonation_screen.result.sugar_keg(
@@ -909,12 +1298,14 @@ class _CarbonationResultCard extends StatelessWidget {
                   temp: _fmtNumber(fermTemp!, 1),
                   target: _fmtNumber(target!, 1),
                 ),
-                style: TextStyle(color: fg, fontSize: 16, height: 1.4),
+                style:
+                    TextStyle(color: fg, fontSize: 15, height: 1.4),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Text(
                 t.carbonation_screen.result.current_co2(
-                  co2: _fmtNumber(sugarResult!.residualCo2GramsPerLiter, 1),
+                  co2: _fmtNumber(
+                      sugarResult!.residualCo2GramsPerLiter, 1),
                 ),
                 style: TextStyle(
                   color: fg.withValues(alpha: 0.7),
@@ -925,7 +1316,9 @@ class _CarbonationResultCard extends StatelessWidget {
           );
         }
       case CarbonationMethod.kegForce:
-        if (pressureResult == null || target == null || carbTemp == null) {
+        if (pressureResult == null ||
+            target == null ||
+            carbTemp == null) {
           body = Text('—', style: TextStyle(color: fg, fontSize: 18));
         } else {
           body = Text(
@@ -934,24 +1327,18 @@ class _CarbonationResultCard extends StatelessWidget {
               temp: _fmtNumber(carbTemp!, 1),
               target: _fmtNumber(target!, 1),
             ),
-            style: TextStyle(color: fg, fontSize: 16, height: 1.4),
+            style: TextStyle(color: fg, fontSize: 15, height: 1.4),
           );
         }
     }
 
-    return Card(
-      color: scheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: body,
-      ),
-    );
+    return body;
   }
 }
 
-class _ServingPressureResultCard extends StatelessWidget {
+class _ServingPressureResultContent extends StatelessWidget {
   final ServingPressureResult? result;
-  const _ServingPressureResultCard({required this.result});
+  const _ServingPressureResultContent({required this.result});
 
   @override
   Widget build(BuildContext context) {
@@ -959,56 +1346,56 @@ class _ServingPressureResultCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final r = result;
 
-    return Card(
-      color: scheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              t.serving_pressure_screen.labels.serving_pressure,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
-                  ),
-            ),
-            const SizedBox(height: 4),
-            _BigNumber(
-              value: r == null ? '—' : r.totalPressureBar.toStringAsFixed(2),
-              unit: 'bar',
-            ),
-            if (r != null) ...[
-              const SizedBox(height: 20),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          t.serving_pressure_screen.labels.serving_pressure,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: scheme.onPrimaryContainer.withValues(alpha: 0.65),
+              ),
+        ),
+        const SizedBox(height: 2),
+        _BigNumber(
+          value:
+              r == null ? '—' : r.totalPressureBar.toStringAsFixed(2),
+          unit: 'bar',
+        ),
+        if (r != null) ...[
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 20,
+            runSpacing: 4,
+            children: [
               _StatRow(
-                label: t.serving_pressure_screen.labels.saturation_pressure,
+                label:
+                    t.serving_pressure_screen.labels.saturation_pressure,
                 value: '${r.saturationPressureBar.toStringAsFixed(2)} bar',
               ),
-              const SizedBox(height: 8),
               _StatRow(
                 label: t.serving_pressure_screen.labels.line_loss,
                 value: '${r.lineLossBar.toStringAsFixed(2)} bar',
               ),
-              const SizedBox(height: 8),
               _StatRow(
                 label: t.serving_pressure_screen.labels.height_loss,
                 value: '${r.heightLossBar.toStringAsFixed(2)} bar',
               ),
-              const SizedBox(height: 8),
               _StatRow(
                 label: t.serving_pressure_screen.labels.safety_margin,
                 value: '${r.safetyMarginBar.toStringAsFixed(2)} bar',
               ),
             ],
-          ],
-        ),
-      ),
+          ),
+        ],
+      ],
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// Shared widgets
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared display widgets
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _BigNumber extends StatelessWidget {
   final String value;
@@ -1020,17 +1407,18 @@ class _BigNumber extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return RichText(
       text: TextSpan(
-        style: Theme.of(context).textTheme.displaySmall?.copyWith(
+        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: scheme.onPrimaryContainer,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
         children: [
           TextSpan(text: value),
           TextSpan(
             text: ' $unit',
             style: TextStyle(
-              fontSize: 22,
-              color: scheme.onPrimaryContainer.withValues(alpha: 0.7),
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: scheme.onPrimaryContainer.withValues(alpha: 0.65),
             ),
           ),
         ],
@@ -1054,69 +1442,6 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-class _NumberField extends StatelessWidget {
-  final TextEditingController controller;
-  final String labelText;
-  final String hintText;
-  final String? suffixText;
-  const _NumberField({
-    required this.controller,
-    required this.labelText,
-    required this.hintText,
-    this.suffixText,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
-      ],
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: labelText,
-        hintText: hintText,
-        suffixText: suffixText,
-      ),
-    );
-  }
-}
-
-class _NumberFieldAllowNegative extends StatelessWidget {
-  final TextEditingController controller;
-  final String labelText;
-  final String hintText;
-  final String? suffixText;
-  final String? helperText;
-  const _NumberFieldAllowNegative({
-    required this.controller,
-    required this.labelText,
-    required this.hintText,
-    this.suffixText,
-    this.helperText,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9.,-]')),
-      ],
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: labelText,
-        hintText: hintText,
-        suffixText: suffixText,
-        helperText: helperText,
-      ),
-    );
-  }
-}
-
 class _StatRow extends StatelessWidget {
   final String label;
   final String value;
@@ -1129,26 +1454,25 @@ class _StatRow extends StatelessWidget {
     final labelColor = scheme.onPrimaryContainer.withValues(alpha: 0.75);
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       children: [
-        Expanded(
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: labelColor,
-                ),
-          ),
+        Text(
+          '$label ',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: labelColor,
+              ),
         ),
         Text(
           value,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: scheme.onPrimaryContainer,
                 fontWeight: FontWeight.w600,
               ),
         ),
         if (suffix != null) ...[
-          const SizedBox(width: 6),
+          const SizedBox(width: 4),
           Text(
             suffix!,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1171,18 +1495,23 @@ class _InfoFooter extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.info_outline, size: 18, color: color),
-        const SizedBox(width: 8),
+        Icon(Icons.info_outline, size: 16, color: color),
+        const SizedBox(width: 6),
         Expanded(
           child: Text(
             text,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color),
+            style:
+                Theme.of(context).textTheme.bodySmall?.copyWith(color: color),
           ),
         ),
       ],
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared parsing helpers (file-level, same as before)
+// ─────────────────────────────────────────────────────────────────────────────
 
 String _fmtPercent(double v) => v.toStringAsFixed(1);
 
