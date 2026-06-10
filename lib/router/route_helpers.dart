@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mashmaster/router/routes.dart';
 import 'dart:developer' as dev;
 
 // Get current route path
@@ -11,7 +10,10 @@ String currentPath(BuildContext context) {
 }
 
 bool showLeadingBackButton(BuildContext context) {
-  final String actualPath = currentPath(context);
-  dev.log(actualPath);
-  return !MainRoute.values.map((route) => route.path).contains(actualPath);
+  final String path = currentPath(context);
+  dev.log(path);
+  // canPop() is the correct GoRouter API: it returns true whenever there is
+  // at least one route below the current one that can be popped to.
+  return GoRouter.of(context).canPop();
 }
+
