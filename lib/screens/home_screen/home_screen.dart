@@ -14,12 +14,13 @@ class HomeScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          // Each card is at most 200 logical pixels wide.
+          // On a ~375 px phone this gives 2 columns; on a 1024 px desktop
+          // it gives 5 columns, so all cards fit without scrolling.
+          maxCrossAxisExtent: 200,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
-          // childAspectRatio is driven by AspectRatio(1) inside ScreenCard,
-          // so we set it to 1 here to match.
           childAspectRatio: 1,
         ),
         itemCount: cards.length,
