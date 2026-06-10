@@ -112,13 +112,15 @@ class _HomeScreenDosageCalcState extends State<HomeScreenDosageCalc> {
     final calc = _buildCalculation();
     final amount = (liters == null || calc == null) ? null : calc.amountFor(liters);
 
-    return Stack(
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
+    return Column(
       children: [
         // ── Scrollable input area ──────────────────────────────────────────
-        Positioned.fill(
+        Expanded(
           child: SingleChildScrollView(
-            // Bottom padding reserves space for the pinned result card.
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 180),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -253,25 +255,27 @@ class _HomeScreenDosageCalcState extends State<HomeScreenDosageCalc> {
           ),
         ),
 
-        // ── Pinned Result Card ─────────────────────────────────────────────
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: _PinnedResultCard(
-            productLabel: _productLabel(t, _product),
-            amount: amount,
-            unit: calc == null ? _customUnit : calc.unit,
-            noRinse: calc?.noRinse ?? true,
-            contactTime: _contactTimeLabel(t, _product),
-            showMeta: _product != DosageType.custom,
-            unitLabel: _unitLabel,
-          ),
+        // ── Pinned Result Card (hidden while keyboard is open) ─────────────
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          child: keyboardOpen
+              ? const SizedBox.shrink()
+              : _PinnedResultCard(
+                  productLabel: _productLabel(t, _product),
+                  amount: amount,
+                  unit: calc == null ? _customUnit : calc.unit,
+                  noRinse: calc?.noRinse ?? true,
+                  contactTime: _contactTimeLabel(t, _product),
+                  showMeta: _product != DosageType.custom,
+                  unitLabel: _unitLabel,
+                ),
         ),
       ],
     );
   }
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Form Card wrapper

@@ -330,12 +330,14 @@ class _AbvCalcBodyState extends State<_AbvCalcBody> {
 
     // Step size depends on the unit
     final step = _unit == GravityUnit.plato ? 0.1 : 0.001;
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Column(
       children: [
         // ── Scrollable inputs ──────────────────────────────────────────────
         Expanded(
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -393,8 +395,14 @@ class _AbvCalcBodyState extends State<_AbvCalcBody> {
             ),
           ),
         ),
-        // ── Pinned result ──────────────────────────────────────────────────
-        _PinnedCard(child: _AbvResultCardContent(stats: stats)),
+        // ── Pinned result (hidden while keyboard is open) ─────────────────
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          child: keyboardOpen
+              ? const SizedBox.shrink()
+              : _PinnedCard(child: _AbvResultCardContent(stats: stats)),
+        ),
       ],
     );
   }
@@ -458,12 +466,14 @@ class _RefractometerBodyState extends State<_RefractometerBody> {
   Widget build(BuildContext context) {
     final t = Translations.of(context);
     final result = _compute();
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Column(
       children: [
         // ── Scrollable inputs ──────────────────────────────────────────────
         Expanded(
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -516,12 +526,18 @@ class _RefractometerBodyState extends State<_RefractometerBody> {
             ),
           ),
         ),
-        // ── Pinned result ──────────────────────────────────────────────────
-        _PinnedCard(
-          child: _RefractometerResultContent(
-            result: result,
-            fermented: _fermented,
-          ),
+        // ── Pinned result (hidden while keyboard is open) ─────────────────
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          child: keyboardOpen
+              ? const SizedBox.shrink()
+              : _PinnedCard(
+                  child: _RefractometerResultContent(
+                    result: result,
+                    fermented: _fermented,
+                  ),
+                ),
         ),
       ],
     );
@@ -587,12 +603,14 @@ class _HydrometerBodyState extends State<_HydrometerBody> {
         ? t.hydrometer_screen.hint.measured_plato
         : t.hydrometer_screen.hint.measured_sg;
     final gravityStep = _unit == GravityUnit.plato ? 0.1 : 0.001;
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Column(
       children: [
         // ── Scrollable inputs ──────────────────────────────────────────────
         Expanded(
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -651,9 +669,16 @@ class _HydrometerBodyState extends State<_HydrometerBody> {
             ),
           ),
         ),
-        // ── Pinned result ──────────────────────────────────────────────────
-        _PinnedCard(
-          child: _HydrometerResultContent(corrected: corrected, unit: _unit),
+        // ── Pinned result (hidden while keyboard is open) ─────────────────
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          child: keyboardOpen
+              ? const SizedBox.shrink()
+              : _PinnedCard(
+                  child: _HydrometerResultContent(
+                      corrected: corrected, unit: _unit),
+                ),
         ),
       ],
     );
@@ -757,12 +782,14 @@ class _CarbonationBodyState extends State<_CarbonationBody> {
     final volumeLabel = _method == CarbonationMethod.bottleSugar
         ? t.carbonation_screen.labels.bottling_volume
         : t.carbonation_screen.labels.keg_volume;
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Column(
       children: [
         // ── Scrollable inputs ──────────────────────────────────────────────
         Expanded(
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -884,17 +911,23 @@ class _CarbonationBodyState extends State<_CarbonationBody> {
             ),
           ),
         ),
-        // ── Pinned result ──────────────────────────────────────────────────
-        _PinnedCard(
-          child: _CarbonationResultContent(
-            method: _method,
-            target: target,
-            volume: volume,
-            fermTemp: fermTemp,
-            carbTemp: carbTemp,
-            sugarResult: sugarResult,
-            pressureResult: pressureResult,
-          ),
+        // ── Pinned result (hidden while keyboard is open) ─────────────────
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          child: keyboardOpen
+              ? const SizedBox.shrink()
+              : _PinnedCard(
+                  child: _CarbonationResultContent(
+                    method: _method,
+                    target: target,
+                    volume: volume,
+                    fermTemp: fermTemp,
+                    carbTemp: carbTemp,
+                    sugarResult: sugarResult,
+                    pressureResult: pressureResult,
+                  ),
+                ),
         ),
       ],
     );
@@ -962,12 +995,14 @@ class _ServingPressureBodyState extends State<_ServingPressureBody> {
   Widget build(BuildContext context) {
     final t = Translations.of(context);
     final result = _compute();
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Column(
       children: [
         // ── Scrollable inputs ──────────────────────────────────────────────
         Expanded(
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1051,9 +1086,15 @@ class _ServingPressureBodyState extends State<_ServingPressureBody> {
             ),
           ),
         ),
-        // ── Pinned result ──────────────────────────────────────────────────
-        _PinnedCard(
-          child: _ServingPressureResultContent(result: result),
+        // ── Pinned result (hidden while keyboard is open) ─────────────────
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          child: keyboardOpen
+              ? const SizedBox.shrink()
+              : _PinnedCard(
+                  child: _ServingPressureResultContent(result: result),
+                ),
         ),
       ],
     );
