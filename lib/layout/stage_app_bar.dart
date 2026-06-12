@@ -34,7 +34,8 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
         // icon: Icon(Icons.bug_report_rounded),
         // ),
       ],
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      backgroundColor: const Color(0xfffbe311),
+      foregroundColor: const Color(0xff261606),
     );
     // return AppBar(
     //   // forceMaterialTransparency: true,
