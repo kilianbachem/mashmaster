@@ -27,116 +27,21 @@ class ContactScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 16, height: 3),
                   textAlign: TextAlign.center,
                 ),
-                Card(
-                  color: Theme.of(context).colorScheme.tertiaryFixed,
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 32.0,
-                    ),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 54,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          foregroundImage: AssetImage(
-                            "assets/images/profile.jpg",
-                          ),
-                          child: const Text("NO"),
-                        ),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 16),
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  minTileHeight: 0,
-                                  contentPadding: EdgeInsets.zero,
-                                  title: Text(t.contact_screen.dev_card.name),
-                                  subtitle: Text(
-                                    t.contact_screen.dev_card.title,
-                                  ),
-                                  isThreeLine: false,
-                                  titleTextStyle: TextStyle(
-                                    fontSize: 24,
-                                    color:
-                                        Theme.of(
-                                          context,
-                                        ).colorScheme.onTertiaryFixedVariant,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  subtitleTextStyle: TextStyle(
-                                    fontSize: 18,
-                                    color:
-                                        Theme.of(
-                                          context,
-                                        ).colorScheme.onTertiaryFixedVariant,
-                                    height: 1.5,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    IconButton.outlined(
-                                      onPressed: () async {
-                                        await Wiredash.trackEvent(
-                                          'GitHub Profile Visit',
-                                        );
-                                        launchURL(
-                                          'https://github.com/NightmindOfficial',
-                                        );
-                                      },
-                                      icon: Icon(
-                                        SocialMediaIcon.github_circled,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.onTertiary,
-                                      ),
-                                      style: IconButton.styleFrom(
-                                        elevation: 3,
-                                        backgroundColor:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.tertiary,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    IconButton.outlined(
-                                      onPressed: () async {
-                                        await Wiredash.trackEvent(
-                                          'Sent E-Mail',
-                                        );
-                                        launchURL(
-                                          'mailto:${dotenv.env['EMAIL']}?subject=Mashmaster User Feedback',
-                                        );
-                                      },
-                                      icon: Icon(
-                                        Icons.email_rounded,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.onTertiary,
-                                      ),
-                                      style: IconButton.styleFrom(
-                                        elevation: 3,
-                                        backgroundColor:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.tertiary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                _DeveloperCard(
+                  name: t.contact_screen.dev_card.name,
+                  title: t.contact_screen.dev_card.title,
+                  image: const AssetImage("assets/images/profile.jpg"),
+                  initials: "NO",
+                  githubUrl: 'https://github.com/NightmindOfficial',
+                  emailSubject: 'Mashmaster User Feedback',
+                ),
+                const SizedBox(height: 8),
+                _DeveloperCard(
+                  name: t.contact_screen.contributor_card.name,
+                  title: t.contact_screen.contributor_card.title,
+                  image: const AssetImage("assets/images/profile_kilian.jpg"),
+                  initials: "KB",
+                  githubUrl: 'https://github.com/kilianbachem',
                 ),
                 Divider(),
                 Text(
@@ -171,6 +76,110 @@ class ContactScreen extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DeveloperCard extends StatelessWidget {
+  final String name;
+  final String title;
+  final ImageProvider image;
+  final String initials;
+  final String githubUrl;
+  final String? emailSubject;
+
+  const _DeveloperCard({
+    required this.name,
+    required this.title,
+    required this.image,
+    required this.initials,
+    required this.githubUrl,
+    this.emailSubject,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Card(
+      color: scheme.tertiaryFixed,
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: scheme.secondary,
+              foregroundImage: image,
+              child: Text(initials),
+            ),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Column(
+                  children: [
+                    ListTile(
+                      minTileHeight: 0,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(name),
+                      subtitle: Text(title),
+                      isThreeLine: false,
+                      titleTextStyle: TextStyle(
+                        fontSize: 22,
+                        color: scheme.onTertiaryFixedVariant,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      subtitleTextStyle: TextStyle(
+                        fontSize: 18,
+                        color: scheme.onTertiaryFixedVariant,
+                        height: 1.5,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton.outlined(
+                          onPressed: () async {
+                            await Wiredash.trackEvent('GitHub Profile Visit');
+                            launchURL(githubUrl);
+                          },
+                          icon: Icon(
+                            SocialMediaIcon.github_circled,
+                            color: scheme.onTertiary,
+                          ),
+                          style: IconButton.styleFrom(
+                            elevation: 3,
+                            backgroundColor: scheme.tertiary,
+                          ),
+                        ),
+                        if (emailSubject != null) ...[
+                          SizedBox(width: 8),
+                          IconButton.outlined(
+                            onPressed: () async {
+                              await Wiredash.trackEvent('Sent E-Mail');
+                              launchURL(
+                                'mailto:${dotenv.env['EMAIL']}?subject=$emailSubject',
+                              );
+                            },
+                            icon: Icon(
+                              Icons.email_rounded,
+                              color: scheme.onTertiary,
+                            ),
+                            style: IconButton.styleFrom(
+                              elevation: 3,
+                              backgroundColor: scheme.tertiary,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

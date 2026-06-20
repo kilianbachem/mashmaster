@@ -165,6 +165,7 @@ class _TranslationsContactScreenDe extends TranslationsContactScreenEn {
   String get label_one => 'Für Feedback, Vorschläge und Anregungen';
   @override
   late final _TranslationsContactScreenDevCardDe dev_card = _TranslationsContactScreenDevCardDe._(_root);
+  late final _TranslationsContactScreenContributorCardDe contributor_card = _TranslationsContactScreenContributorCardDe._(_root);
   @override
   late final _TranslationsContactScreenBugReportDe bug_report = _TranslationsContactScreenBugReportDe._(_root);
   @override
@@ -405,6 +406,19 @@ class _TranslationsContactScreenDevCardDe extends TranslationsContactScreenDevCa
   // Translations
   @override
   String get name => '@NightmindOfficial';
+  @override
+  String get title => 'App-Entwickler';
+}
+
+// Path: contact_screen.contributor_card
+class _TranslationsContactScreenContributorCardDe extends TranslationsContactScreenContributorCardEn {
+  _TranslationsContactScreenContributorCardDe._(TranslationsDe root) : this._root = root, super.internal(root);
+
+  final TranslationsDe _root; // ignore: unused_field
+
+  // Translations
+  @override
+  String get name => '@kilianbachem';
   @override
   String get title => 'App-Entwickler';
 }

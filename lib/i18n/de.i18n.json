@@ -51,6 +51,10 @@
       "name": "@NightmindOfficial",
       "title": "App-Entwickler"
     },
+    "contributor_card": {
+      "name": "@kilianbachem",
+      "title": "App-Entwickler"
+    },
     "bug_report": {
       "label": "Du möchtest einen Bug melden?",
       "button_label": "Bug Report abschicken"

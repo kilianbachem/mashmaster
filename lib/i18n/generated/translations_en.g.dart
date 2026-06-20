@@ -130,6 +130,7 @@ class TranslationsContactScreenEn {
   // Translations
   String get label_one => 'For Feedback, Suggestions and other Comments';
   late final TranslationsContactScreenDevCardEn dev_card = TranslationsContactScreenDevCardEn.internal(_root);
+  late final TranslationsContactScreenContributorCardEn contributor_card = TranslationsContactScreenContributorCardEn.internal(_root);
   late final TranslationsContactScreenBugReportEn bug_report = TranslationsContactScreenBugReportEn.internal(_root);
   String get version_label => 'Made with ♡ in Vallendar.';
 }
@@ -316,6 +317,17 @@ class TranslationsContactScreenDevCardEn {
 
   // Translations
   String get name => '@NightmindOfficial';
+  String get title => 'App Developer';
+}
+
+// Path: contact_screen.contributor_card
+class TranslationsContactScreenContributorCardEn {
+  TranslationsContactScreenContributorCardEn.internal(this._root);
+
+  final Translations _root; // ignore: unused_field
+
+  // Translations
+  String get name => '@kilianbachem';
   String get title => 'App Developer';
 }
 
