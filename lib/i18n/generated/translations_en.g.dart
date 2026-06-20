@@ -533,6 +533,7 @@ class TranslationsServingPressureScreenLabelsEn {
   // Translations
   String get co2_level => 'CO₂ Level';
   String get beer_temp => 'Beer Temperature';
+  String get line_setup => 'Line Setup';
   String get line_length => 'Line Length';
   String get line_diameter => 'Line Diameter';
   String get height_difference => 'Height Difference';

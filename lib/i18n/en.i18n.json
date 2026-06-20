@@ -178,6 +178,7 @@
         "labels": {
             "co2_level": "CO₂ Level",
             "beer_temp": "Beer Temperature",
+            "line_setup": "Line Setup",
             "line_length": "Line Length",
             "line_diameter": "Line Diameter",
             "height_difference": "Height Difference",

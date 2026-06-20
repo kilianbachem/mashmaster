@@ -1035,23 +1035,39 @@ class _ServingPressureBodyState extends State<_ServingPressureBody> {
                 const SizedBox(height: 12),
                 // Block 2: Line setup
                 _FormCard(
-                  label: t.serving_pressure_screen.labels.line_diameter,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      SegmentedButton<LineDiameter>(
-                        showSelectedIcon: false,
-                        segments: LineDiameter.values
-                            .map((d) => ButtonSegment(
-                                  value: d,
-                                  label: Text(
-                                      ServingPressureCalculation.diameterLabel(
-                                          d)),
-                                ))
-                            .toList(),
-                        selected: {_diameter},
-                        onSelectionChanged: (s) =>
-                            setState(() => _diameter = s.first),
+                      InputDecorator(
+                        decoration: InputDecoration(
+                          labelText:
+                              t.serving_pressure_screen.labels.line_diameter,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.fromLTRB(
+                              12, 12, 12, 12),
+                        ),
+                        child: SegmentedButton<LineDiameter>(
+                          showSelectedIcon: false,
+                          style: ButtonStyle(
+                            side: WidgetStatePropertyAll(BorderSide.none),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                          segments: LineDiameter.values
+                              .map((d) => ButtonSegment(
+                                    value: d,
+                                    label: Text(
+                                        ServingPressureCalculation
+                                            .diameterLabel(d)),
+                                  ))
+                              .toList(),
+                          selected: {_diameter},
+                          onSelectionChanged: (s) =>
+                              setState(() => _diameter = s.first),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       _StepperField(

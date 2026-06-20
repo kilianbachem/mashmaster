@@ -178,6 +178,7 @@
     "labels": {
       "co2_level": "CO₂-Gehalt",
       "beer_temp": "Biertemperatur",
+      "line_setup": "Leitungsaufbau",
       "line_length": "Leitungslänge",
       "line_diameter": "Leitungsdurchmesser",
       "height_difference": "Höhendifferenz",

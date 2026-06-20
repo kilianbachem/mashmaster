@@ -694,6 +694,8 @@ class _TranslationsServingPressureScreenLabelsDe extends TranslationsServingPres
   @override
   String get beer_temp => 'Biertemperatur';
   @override
+  String get line_setup => 'Leitungsaufbau';
+  @override
   String get line_length => 'Leitungslänge';
   @override
   String get line_diameter => 'Leitungsdurchmesser';
